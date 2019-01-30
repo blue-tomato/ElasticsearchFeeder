@@ -5,7 +5,7 @@ This ElasticSearch module for [ProcessWire CMS/CMF](http://processwire.com/) wil
 ## Table of Contents
 
 - [Features](#features)
-- [Features](#features)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Module Configuration](#configuration)
