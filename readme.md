@@ -5,7 +5,7 @@ This ElasticSearch module for [ProcessWire CMS/CMF](http://processwire.com/) wil
 ## Table of Contents
 
 - [Features](#features)
-- [Basic Features](#basic features)
+- [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Module Configuration](#configuration)
@@ -14,7 +14,7 @@ This ElasticSearch module for [ProcessWire CMS/CMF](http://processwire.com/) wil
 - [Contributing](#contributing)
 - [License](#license)
 
-## Basic Features
+## Features
 
 - Batch add / updates pages in ElasticSearch
 - Add / update page in ElasticSearch after page save/publish
