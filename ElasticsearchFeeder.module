@@ -347,7 +347,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		$page = $event->arguments[0];
 
 		// check if the page isn't in the trash and is published and viewable for all
-		if(!$page->isTrash() && $page->isPublic()) {
+		if(!$page->isTrash() && $page->isPublic() && $this->checkAllowedTemplate($page->template)) {
 			$success = $this->sendDocumentToElasticSearch($page);
 
 			if($success) {
@@ -379,13 +379,17 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 	public function afterPageRestored($event) {
 		$page = $event->arguments[0];
-		$success = $this->sendDocumentToElasticSearch($page);
 
-		if($success) {
-			$this->session->message("Document successful sent to ElasticSearch.");
-		} else {
-			$this->session->warning("Can't sent document (pageId: {$page->id}) to ElasticSearch.", Notice::log);
+		if(!$page->isTrash() && $page->isPublic() && $this->checkAllowedTemplate($page->template)) {
+			$success = $this->sendDocumentToElasticSearch($page);
+
+			if($success) {
+				$this->session->message("Document successful sent to ElasticSearch.");
+			} else {
+				$this->session->warning("Can't sent document (pageId: {$page->id}) to ElasticSearch.", Notice::log);
+			}
 		}
+
 	}
 
 	public function beforePageDelete($event) {
