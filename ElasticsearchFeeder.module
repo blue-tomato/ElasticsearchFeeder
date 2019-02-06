@@ -12,7 +12,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 100,
+			'version' => 101,
 			'summary' => 'Schema-flexible module for getting your page into cloudhosted Elasticsearch like Bonsai or elastic.io.',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
