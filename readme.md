@@ -33,8 +33,12 @@ Usually ES SaaS providers inform about this in a setup/configuration section in 
 
 ## Installation
 
-To install this module...
-1. paste the `ElasticsearchFeeder` folder to your `modules` directory in `/site/modules`.
+1. Execute the following command in the root directory of your ProcessWire installation:
+
+```
+composer require blue-tomato/elasticsearchfeeder
+```
+
 2. ProcessWire will detect the module and list it in the backend's `Modules` > `Site` > `ElasticsearchFeeder` section. Navigate there and install it.
 
 *NOTE: Installing the module will add a `elasticsearch_lastindex` field to your templates when the page gets indexed initially (so on runtime), which will only be visible to superusers.*
