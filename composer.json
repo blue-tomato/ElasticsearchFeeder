@@ -1,5 +1,5 @@
 {
-    "name": "blue-tomato/elasticsearchfeeder",
+    "name": "blue-tomato/elasticsearch-feeder",
     "type": "pw-module",
     "description": "Schema-flexible ProcessWire module for getting your page into cloudhosted Elasticsearch like Bonsai",
     "keywords": [ "elasticsearch", "elastic", "bonsai", "processwire"],
