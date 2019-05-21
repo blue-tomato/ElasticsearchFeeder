@@ -36,7 +36,7 @@ Usually ES SaaS providers inform about this in a setup/configuration section in 
 1. Execute the following command in the root directory of your ProcessWire installation:
 
 ```
-composer require blue-tomato/elasticsearchfeeder
+composer require blue-tomato/elasticsearch-feeder
 ```
 
 2. ProcessWire will detect the module and list it in the backend's `Modules` > `Site` > `ElasticsearchFeeder` section. Navigate there and install it.
