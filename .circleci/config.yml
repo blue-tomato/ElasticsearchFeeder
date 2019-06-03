@@ -8,6 +8,14 @@ jobs:
     docker:
       - image: circleci/php:7.3.6-cli-stretch
       - image: circleci/mysql:8.0.4
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: processwire
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+          MYSQL_PORT: 3306
+          MYSQL_HOST: 127.0.0.1
       - image: elasticsearch:6.8.0
     steps:
 
@@ -22,4 +30,4 @@ jobs:
       - run: sudo composer global require wireshell/wireshell
 
       # Install ProcessWire
-      - run: sudo /root/.composer/vendor/bin/wireshell new processwire --profile=default --dbUser=root --dbPass= --dbName=processwire --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
+      - run: sudo /root/.composer/vendor/bin/wireshell new processwire --profile=default --dbUser=root --dbPass=root --dbName=processwire --timezone=Europe/Berlin --httpHosts=127.0.0.1 --username=admin --userpass=Test123 --useremail=john.doe@acme.com
