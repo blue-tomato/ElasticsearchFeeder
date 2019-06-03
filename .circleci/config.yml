@@ -7,11 +7,10 @@ jobs:
   build:
     docker:
       - image: circleci/php:7.3.6-cli-stretch
-      - image: circleci/mysql:5.7
+      - image: circleci/mysql:8.0.4
         environment:
           MYSQL_DATABASE: processwire
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_PORT: 3306
           MYSQL_HOST: 127.0.0.1
       - image: elasticsearch:6.8.0
     steps:
