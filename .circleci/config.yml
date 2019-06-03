@@ -22,4 +22,4 @@ jobs:
       - run: sudo composer global require wireshell/wireshell
 
       # Install ProcessWire
-      - run: /root/.composer/vendor/bin/wireshell new processwire --profile=default --dbUser=root --dbPass= --dbName=processwire --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
+      - run: sudo /root/.composer/vendor/bin/wireshell new processwire --profile=default --dbUser=root --dbPass= --dbName=processwire --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
