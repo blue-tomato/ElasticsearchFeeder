@@ -1,0 +1,26 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.3.6-cli-stretch
+      - image: circleci/mysql:8.0.4
+      - image: elasticsearch:7.1.0
+    steps:
+
+      # checkout source code
+      - checkout
+
+      - run: sudo apt install -y libsqlite3-dev zlib1g-dev
+      - run: sudo docker-php-ext-install zip
+      - run: sudo composer self-update
+
+      # Install wireshell
+      - run: sudo composer global require wireshell/wireshell
+
+      # Install ProcessWire
+      - run: wireshell new processwire --profile=default --dbUser=root --dbPass= --dbName=processwire --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
+      
