@@ -334,7 +334,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			$success = $this->sendDocumentToElasticSearch($page);
 
 			if($success) {
-				$page->setAndSave($elasticSearchFieldName, date('c'));
+				$page->setAndSave($elasticSearchFieldName, date('c'), [ "quiet" => true, "noHooks" => true ]);
 				$this->session->message("Document successful sent to ElasticSearch.");
 			} else {
 				$this->session->warning("Can't sent document (pageId: {$page->id}) to ElasticSearch.", Notice::log);
@@ -601,7 +601,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 				$success = $this->sendDocumentToElasticSearch($page);
 
 				if($success) {
-					$page->setAndSave($elasticSearchFieldName, date('c'));
+					$page->setAndSave($elasticSearchFieldName, date('c'), [ "quiet" => true, "noHooks" => true ]);
 
 					// output log in CLI batch import script
 					if($config->cli) {
