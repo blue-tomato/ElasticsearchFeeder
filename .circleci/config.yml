@@ -14,8 +14,8 @@ jobs:
       # checkout source code
       - checkout
 
-      - run: sudo apt-get install -y libsqlite3-dev pdo pdo_mysql mysqli libpng-dev zziplib-bin zlib1g-dev
-      - run: sudo docker-php-ext-install gd
+      - run: sudo apt install -y libsqlite3-dev libpng-dev zziplib-bin zlib1g-dev
+      - run: sudo docker-php-ext-install gd pdo pdo_mysql mysqli
       - run: sudo composer self-update
 
       # Install wireshell

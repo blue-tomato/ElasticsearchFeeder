@@ -6,6 +6,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 	/**
 	 * Description of the module including meta data
+	 *
 	 */
 	public static function getModuleInfo() {
 		return array(
