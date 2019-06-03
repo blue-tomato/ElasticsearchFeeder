@@ -8,7 +8,7 @@ jobs:
     docker:
       - image: circleci/php:7.3.6-cli-stretch
       - image: circleci/mysql:8.0.4
-      - image: elasticsearch:7.1.0
+      - image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
     steps:
 
       # checkout source code
@@ -22,5 +22,4 @@ jobs:
       - run: sudo composer global require wireshell/wireshell
 
       # Install ProcessWire
-      - run: wireshell new processwire --profile=default --dbUser=root --dbPass= --dbName=processwire --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
-      
+      - run: ~/.config/composer/vendor/bin/wireshell new processwire --profile=default --dbUser=root --dbPass= --dbName=processwire --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
