@@ -20,7 +20,7 @@ jobs:
       # checkout source code
       - checkout
 
-      - run: sudo apt install -y libpng-dev zziplib-bin zlib1g-dev
+      - run: sudo apt install -y libpng-dev zziplib-bin zlib1g-dev mysql-shell
       - run: sudo docker-php-ext-install gd pdo pdo_mysql mysqli
       - run: sudo composer self-update
 
