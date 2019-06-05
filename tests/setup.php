@@ -1,6 +1,6 @@
 <?php
 
-  if($_ENV['PW_ENV'] !== 'testing') {
+  if(getenv('PW_ENV') !== 'testing') {
     echo 'This script should only run in the CI server';
     exit();
   }
