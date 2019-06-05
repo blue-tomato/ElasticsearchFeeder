@@ -10,6 +10,7 @@ jobs:
         name: app
       - image: circleci/mysql:8.0.4
         name: db
+        command: [--default-authentication-plugin=mysql_native_password]
         environment:
           MYSQL_DATABASE: test_database
           MYSQL_ROOT_PASSWORD: root
