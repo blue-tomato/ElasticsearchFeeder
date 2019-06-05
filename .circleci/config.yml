@@ -23,12 +23,21 @@ jobs:
       # checkout source code
       - checkout
 
-      - run: sudo apt-get install -y libpng-dev zziplib-bin zlib1g-dev mysql-client
+      - run: sudo apt-get install -y libpng-dev zziplib-bin zlib1g-dev
       - run: sudo docker-php-ext-install gd pdo pdo_mysql mysqli
       - run: sudo composer self-update
+
+      # pack es module files into subfolder
+      - run: sudo mkdir ElasticsearchFeeder && sudo mv * ElasticsearchFeeder
 
       # Install wireshell
       - run: sudo composer global require wireshell/wireshell
 
       # Install ProcessWire
-      - run: sudo /root/.composer/vendor/bin/wireshell new processwire --profile=default --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
+      - run: sudo /root/.composer/vendor/bin/wireshell new processwire --profile=default --dbEngine=InnoDB --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
+
+      # Move ES module into pw module folder
+      - run: sudo mv ElasticsearchFeeder processwire/site/modules/
+
+      # enable module
+      - run: sudo /root/.composer/vendor/bin/wireshell module:enable ElasticsearchFeeder
