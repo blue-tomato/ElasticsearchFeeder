@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![ProcessWire 3](https://img.shields.io/badge/ProcessWire-3.x-orange.svg)](https://github.com/processwire/processwire)
+[![CircleCI](https://circleci.com/gh/blue-tomato/ElasticsearchFeeder/tree/master.svg?style=svg)](https://circleci.com/gh/blue-tomato/ElasticsearchFeeder/tree/master)
 
 This ElasticSearch module for [ProcessWire CMS/CMF](http://processwire.com/) will sync your page content to an ElasticSearch index, which provides you a convenient way to search it.
 

@@ -1,9 +1,9 @@
 <?php
 
-  if(getenv('PW_ENV') != 'testing') {
-    echo 'This script should only run in the CI server';
-    exit();
-  }
+  //if(getenv('PW_ENV') != 'testing') {
+  //  echo 'This script should only run in the CI server';
+  //  exit();
+  //}
 
   include_once(__DIR__ . "/../../../../index.php");
 
