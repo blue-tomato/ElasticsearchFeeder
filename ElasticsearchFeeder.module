@@ -12,7 +12,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 105,
+			'version' => 110,
 			'summary' => 'Schema-flexible module for getting your page into cloudhosted Elasticsearch like Bonsai or elastic.io.',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
@@ -283,7 +283,8 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		// $this->dashesToCamelCase() i.e. converts content-page to contentPage
 		$documentSchemaFunctionName = $this->dashesToCamelCase($page->template->name);
 
-		$documentTypeSchemaPath = "{$config->paths->templates}/{$this->getElasticSearchSchemaPath()}/{$page->template->name}.schema";
+		$documentTypeSchemaPath = "{$config->paths->templates}/{$this->getElasticSearchSchemaPath()}/{$page->template->name}.schema.php";
+
 		if(file_exists($documentTypeSchemaPath)) {
 			include_once($documentTypeSchemaPath);
 			// from now on $documentSchemaFunctionName() from the schema file should be available as a function

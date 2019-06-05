@@ -63,17 +63,17 @@ Configure the module in your ProcessWire module backend (which will be available
 
 ### Schema
 
-Setup a schema or multiple schemas to define which content(s) will be shipped to your ElasticSearch instance. Consider to place your schema files with a `.schema` file ending in the directory path you declared when configuring your module in the ProcessWire backend.
+Setup a schema or multiple schemas to define which content(s) will be shipped to your ElasticSearch instance. Consider to place your schema files with a `.schema.php` file ending in the directory path you declared when configuring your module in the ProcessWire backend.
 
 Basically said: for each ElasticSearch document type, there must be a PHP function returning the contents to be indexed in your ElasticSearch instance.
 The naming convention of this function has to be the `camelCased` document type name you declare in the ProcessWire backend module configuration. So i.e.: a document type named **news-details-page** in the ProcessWire backend requires schema function named **newsDetailsPage**.
 
-The filename itself has to be the same name as the template name. I.e.: **news-details-page.php** should be **news-details-page.schema**
+The filename itself has to be the same name as the template name. I.e.: **news-details-page.php** should be **news-details-page.schema.php**
 
 #### Page Filtering in Schema
 If a Schema Function returns `false` as value, the page will not be sent to ElasticSearch. You can use this for filtering you pages and sending only specific pages from this template to ElasticSearch.
 
-#### Schema Function (i.e. news-details-page.schema)
+#### Schema Function (i.e. news-details-page.schema.php)
 
 This module passes the following arguments to your schema function.
 

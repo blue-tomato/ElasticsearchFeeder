@@ -18,6 +18,8 @@
     'es_index_id_prefix' => 'test'
   ]);
 
+  // template ID: 29 basic-page
+
   // Setup Test Schema for processwire default siteprofile
 
 
