@@ -34,7 +34,7 @@ jobs:
             sudo composer global require wireshell/wireshell
 
       - run:
-          name: Prepare and Setup Processwire and ElasticsearchFeeder Module
+          name: Install Processwire and Prepare ElasticsearchFeeder Module
           command: |
             sudo mkdir ../ElasticsearchFeeder && sudo mv * ../ElasticsearchFeeder
             sudo /root/.composer/vendor/bin/wireshell new processwire --profile=default --dbEngine=MyISAM --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
@@ -45,5 +45,5 @@ jobs:
           command: |
             sudo /root/.composer/vendor/bin/wireshell module:enable ElasticsearchFeeder
             sudo php processwire/site/modules/ElasticsearchFeeder/tests/setup.php
-            sudo mkdir processwire/site/template/elasticSearchSchema
-            sudo mv processwire/site/modules/ElasticsearchFeeder/tests/basic-page.schema.php processwire/site/template/elasticSearchSchema
+            sudo mkdir processwire/site/templates/elasticSearchSchema
+            sudo mv processwire/site/modules/ElasticsearchFeeder/tests/basic-page.schema.php processwire/site/templates/elasticSearchSchema
