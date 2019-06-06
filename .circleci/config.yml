@@ -50,4 +50,11 @@ jobs:
 
       - run:
           name: Test ElasticsearchFeeder batchSync
-          command: sudo php processwire/site/modules/ElasticsearchFeeder/batchSync.php
+          command:
+            sudo php processwire/site/modules/ElasticsearchFeeder/batchSync.php
+            curl -XGET 'http://es:9200/testindex/_count'
+            # node test 1 execut node script check count --> request ES
+            # unpublish something --> node test 2
+            # delete something --> node test 3
+            # republish something --> node test 4
+            # save something --> node test 5
