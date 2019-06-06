@@ -47,3 +47,7 @@ jobs:
             sudo php processwire/site/modules/ElasticsearchFeeder/tests/setup.php
             sudo mkdir processwire/site/templates/elasticSearchSchema
             sudo mv processwire/site/modules/ElasticsearchFeeder/tests/basic-page.schema.php processwire/site/templates/elasticSearchSchema
+
+      - run:
+          name: Test ElasticsearchFeeder batchSync
+          command: sudo php processwire/site/modules/ElasticsearchFeeder/batchSync.php
