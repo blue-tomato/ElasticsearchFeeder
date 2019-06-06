@@ -25,23 +25,25 @@ jobs:
       # checkout source code
       - checkout
 
-      - run: sudo apt-get install -y libpng-dev zziplib-bin zlib1g-dev
-      - run: sudo docker-php-ext-install gd pdo pdo_mysql mysqli
-      - run: sudo composer self-update
+      - run:
+        name: Install Server Tools
+        command: |
+          sudo apt-get install -y libpng-dev zziplib-bin zlib1g-dev
+          sudo docker-php-ext-install gd pdo pdo_mysql mysqli
+          sudo composer self-update
+          sudo composer global require wireshell/wireshell
 
-      # pack es module files into subfolder
-      - run: sudo mkdir ../ElasticsearchFeeder && sudo mv * ../ElasticsearchFeeder
+      - run:
+        name: Prepare and Setup Processwire and ElasticsearchFeeder Module
+        command: |
+          sudo mkdir ../ElasticsearchFeeder && sudo mv * ../ElasticsearchFeeder
+          sudo /root/.composer/vendor/bin/wireshell new processwire --profile=default --dbEngine=MyISAM --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
+          sudo mv ../ElasticsearchFeeder processwire/site/modules/
 
-      # Install wireshell
-      - run: sudo composer global require wireshell/wireshell
-
-      # Install ProcessWire
-      - run: sudo /root/.composer/vendor/bin/wireshell new processwire --profile=default --dbEngine=MyISAM --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
-
-      # Move ES module into pw module folder
-      - run: sudo mv ../ElasticsearchFeeder processwire/site/modules/
-
-      # enable module
-      - run: sudo /root/.composer/vendor/bin/wireshell module:enable ElasticsearchFeeder
-      - run: sudo php processwire/site/modules/ElasticsearchFeeder/tests/setup.php
-      
+      - run:
+        name: Install Module, Set Module Config, Setup Test Schema
+        command: |
+          sudo /root/.composer/vendor/bin/wireshell module:enable ElasticsearchFeeder
+          sudo php processwire/site/modules/ElasticsearchFeeder/tests/setup.php
+          sudo mkdir processwire/site/template/elasticSearchSchema
+          sudo mv processwire/site/modules/ElasticsearchFeeder/tests/basic-page.schema.php processwire/site/template/elasticSearchSchema

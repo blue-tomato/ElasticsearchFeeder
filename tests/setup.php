@@ -23,8 +23,5 @@
     "es_template_indexname_$testTemplateId" => "testindex",
     "es_template_type_$testTemplateId" => "testtype"
   ]);
-
-  // Setup Test Schema for processwire default siteprofile
-
-
+  
   exit();
