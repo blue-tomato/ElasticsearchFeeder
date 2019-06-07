@@ -5,9 +5,7 @@
   //  exit();
   //}
 
-  include_once(__DIR__ . "/../../../../index.php");
-
-  //$esconfig = $modules->getModuleConfigData('ElasticsearchFeeder');
+  include_once(__DIR__ . "/../../../../../index.php");
 
   $testTemplateId = 29;
   $testTemplateName = 'basic-page';
@@ -23,5 +21,5 @@
     "es_template_indexname_$testTemplateId" => "testindex",
     "es_template_type_$testTemplateId" => "testtype"
   ]);
-  
+
   exit();

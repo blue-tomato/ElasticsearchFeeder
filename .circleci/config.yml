@@ -26,12 +26,13 @@ jobs:
       - checkout
 
       - run:
-          name: Install Server Tools
+          name: Install Stuff We Need
           command: |
             sudo apt-get install -y libpng-dev zziplib-bin zlib1g-dev
             sudo docker-php-ext-install gd pdo pdo_mysql mysqli
             sudo composer self-update
             sudo composer global require wireshell/wireshell
+            sudo composer global require peridot-php/peridot
 
       - run:
           name: Install Processwire and Prepare ElasticsearchFeeder Module
@@ -44,9 +45,9 @@ jobs:
           name: Install Module, Set Module Config, Setup Test Schema
           command: |
             sudo /root/.composer/vendor/bin/wireshell module:enable ElasticsearchFeeder
-            sudo php processwire/site/modules/ElasticsearchFeeder/tests/setup.php
+            sudo php processwire/site/modules/ElasticsearchFeeder/tests/setup/bootstrap.php
             sudo mkdir processwire/site/templates/elasticSearchSchema
-            sudo mv processwire/site/modules/ElasticsearchFeeder/tests/basic-page.schema.php processwire/site/templates/elasticSearchSchema
+            sudo mv processwire/site/modules/ElasticsearchFeeder/tests/setup/basic-page.schema.php processwire/site/templates/elasticSearchSchema
 
       - run:
           name: Test ElasticsearchFeeder batchSync
@@ -58,3 +59,9 @@ jobs:
             # delete something --> node test 3
             # republish something --> node test 4
             # save something --> node test 5
+
+        - run:
+            name: Install Test Tools
+            working_directory: ~/project/processwire/tests
+            command:
+              sudo composer require elasticsearch/elasticsearch
