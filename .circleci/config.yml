@@ -65,3 +65,4 @@ jobs:
           working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder
           command:
             sudo composer require elasticsearch/elasticsearch
+            sudo /root/.composer/vendor/bin/peridot tests/testFullSyncCount.spec.php
