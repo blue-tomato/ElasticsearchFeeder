@@ -53,10 +53,10 @@ jobs:
           name: Make ElasticsearchFeeder batchSync
           command: |
             sudo php processwire/site/modules/ElasticsearchFeeder/batchSync.php
-            curl -XGET 'http://es:9200/testindex/_count'
 
       - run:
           name: Run Tests
           working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder/tests
           command: |
+            curl -XGET 'http://es:9200/testindex/_count'
             sudo /root/.composer/vendor/bin/peridot testFullSyncCount.spec.php
