@@ -50,11 +50,6 @@ jobs:
             sudo mv processwire/site/modules/ElasticsearchFeeder/tests/setup/basic-page.schema.php processwire/site/templates/elasticSearchSchema
 
       - run:
-          name: Install elastichsearch-php
-          working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder
-          command: sudo composer require elasticsearch/elasticsearch
-
-      - run:
           name: Make ElasticsearchFeeder batchSync
           command: |
             sudo php processwire/site/modules/ElasticsearchFeeder/batchSync.php
