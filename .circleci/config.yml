@@ -51,6 +51,8 @@ jobs:
 
       - run:
           name: Make ElasticsearchFeeder batchSync
+          # after sync, the task has to sleep for a short time. ES need that time to create the index.
+          # too fast queries to the index after sync will lead into errors because of an empty index
           command: |
             sudo php processwire/site/modules/ElasticsearchFeeder/batchSync.php
             sleep 10s
