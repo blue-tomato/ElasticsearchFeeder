@@ -24,10 +24,10 @@
       $indexName = $ElasticsearchFeeder->getElasticSearchIndexName($template);
       $query = "q=prefix:{$ElasticsearchFeeder->getIndexPrefix()}";
 
-      $countRequestUrl = "$baseUrl/$indexName/_count?$query";
+      $countRequestUrl = "{$baseUrl}/{$indexName}/_count?{$query}";
       $count = $ElasticsearchFeeder->curlJsonGet($countRequestUrl, null)["count"];
 
-      $searchRequestUrl = "$baseUrl/$indexName/_search?$query&size=$count";
+      $searchRequestUrl = "{$baseUrl}/{$indexName}/_search?{$query}&size={$count}";
       $result = $ElasticsearchFeeder->curlJsonGet($searchRequestUrl, null);
 
       echo "Now checking $indexName for invalid documents\n";

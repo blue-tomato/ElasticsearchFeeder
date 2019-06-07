@@ -14,7 +14,7 @@ describe('ES Index after first batchSync', function() {
       $indexName = $this->ElasticsearchFeeder->getElasticSearchIndexName($template);
       $query = "q=prefix:{$this->ElasticsearchFeeder->getIndexPrefix()}";
 
-      $this->countRequestUrl = "$baseUrl/$indexName/_count?$query";
+      $this->countRequestUrl = "{$baseUrl}/{$indexName}/_count?{$query}";
     });
 
     describe('count', function() {
