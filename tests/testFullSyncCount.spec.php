@@ -7,6 +7,9 @@ include_once(__DIR__ . "/../../../../index.php");
 $ElasticsearchFeeder = $modules->get('ElasticsearchFeeder');
 $template = $templates->get('basic-page');
 
+var_dump($ElasticsearchFeeder);
+var_dump($template);
+
 describe('ES Index after first batchSync', function() {
     beforeEach(function() {
       $baseUrl = $ElasticsearchFeeder->getElasticSearchUrlBase();
