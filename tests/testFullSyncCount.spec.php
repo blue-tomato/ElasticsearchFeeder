@@ -3,6 +3,13 @@
 use Elasticsearch\ClientBuilder;
 require '../vendor/autoload.php';
 
+$clientBuilder = ClientBuilder::create();
+$clientBuilder->setHosts(['es']);
+$client = $clientBuilder->build();
+echo $client->cat()->count(['index' => 'testindex']);
+
+exit();
+
 describe('ES Index after first batchSync', function() {
     beforeEach(function() {
       $clientBuilder = ClientBuilder::create();
