@@ -50,19 +50,18 @@ jobs:
             sudo mv processwire/site/modules/ElasticsearchFeeder/tests/setup/basic-page.schema.php processwire/site/templates/elasticSearchSchema
 
       - run:
-          name: Test ElasticsearchFeeder batchSync
+          name: Install elastichsearch-php
+          working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder
+          command: sudo composer require elasticsearch/elasticsearch
+
+      - run:
+          name: Make ElasticsearchFeeder batchSync
           command: |
             sudo php processwire/site/modules/ElasticsearchFeeder/batchSync.php
             curl -XGET 'http://es:9200/testindex/_count'
-            # node test 1 execut node script check count --> request ES
-            # unpublish something --> node test 2
-            # delete something --> node test 3
-            # republish something --> node test 4
-            # save something --> node test 5
 
       - run:
-          name: Install Test Tools
-          working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder
+          name: Run Tests
+          working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder/tests
           command: |
-            sudo composer require elasticsearch/elasticsearch
-            sudo /root/.composer/vendor/bin/peridot tests/testFullSyncCount.spec.php
+            sudo /root/.composer/vendor/bin/peridot testFullSyncCount.spec.php
