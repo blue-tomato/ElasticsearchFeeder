@@ -3,23 +3,22 @@
 // include PW API
 include_once(__DIR__ . "/../../../../index.php");
 
+// load ElasticsearchFeeder module class
+$ElasticsearchFeeder = $modules->get('ElasticsearchFeeder');
+$template = $templates->get('basic-page');
+
 describe('ES Index after first batchSync', function() {
     beforeEach(function() {
-
-      // load ElasticsearchFeeder module class
-      $this->ElasticsearchFeeder = $modules->get('ElasticsearchFeeder');
-      $template = $templates->get('basic-page');
-
-      $baseUrl = $this->ElasticsearchFeeder->getElasticSearchUrlBase();
-      $indexName = $this->ElasticsearchFeeder->getElasticSearchIndexName($template);
-      $query = "q=prefix:{$this->ElasticsearchFeeder->getIndexPrefix()}";
+      $baseUrl = $ElasticsearchFeeder->getElasticSearchUrlBase();
+      $indexName = $ElasticsearchFeeder->getElasticSearchIndexName($template);
+      $query = "q=prefix:{$ElasticsearchFeeder->getIndexPrefix()}";
 
       $this->countRequestUrl = "{$baseUrl}/{$indexName}/_count?{$query}";
     });
 
     describe('count', function() {
         it('should return the number of items', function() {
-            $count = $this->ElasticsearchFeeder->curlJsonGet($this->countRequestUrl, null)["count"];
+            $count = $ElasticsearchFeeder->curlJsonGet($this->countRequestUrl, null)["count"];
             assert($count === 3, 'expected 3');
         });
     });
