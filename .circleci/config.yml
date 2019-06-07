@@ -60,8 +60,8 @@ jobs:
             # republish something --> node test 4
             # save something --> node test 5
 
-        - run:
-            name: Install Test Tools
-            working_directory: ~/project/processwire/tests
-            command:
-              sudo composer require elasticsearch/elasticsearch
+      - run:
+          name: Install Test Tools
+          working_directory: ~/project/processwire/tests
+          command:
+            sudo composer require elasticsearch/elasticsearch
