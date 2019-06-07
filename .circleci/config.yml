@@ -53,6 +53,7 @@ jobs:
           name: Make ElasticsearchFeeder batchSync
           command: |
             sudo php processwire/site/modules/ElasticsearchFeeder/batchSync.php
+            curl -XGET 'http://es:9200/testindex/_count'
             sleep 2m
             curl -XGET 'http://es:9200/testindex/_count'
 
