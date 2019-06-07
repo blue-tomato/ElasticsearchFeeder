@@ -8,7 +8,7 @@ describe('ES Index after first batchSync', function() {
 
       // load ElasticsearchFeeder module class
       $this->ElasticsearchFeeder = $modules->get('ElasticsearchFeeder');
-      $template = $templates->get('basic-page')
+      $template = $templates->get('basic-page');
 
       $baseUrl = $this->ElasticsearchFeeder->getElasticSearchUrlBase();
       $indexName = $this->ElasticsearchFeeder->getElasticSearchIndexName($template);
