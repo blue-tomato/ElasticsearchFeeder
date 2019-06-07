@@ -19,9 +19,6 @@ describe('ES Index after first batchSync', function() {
     describe('count', function() {
         it('should return the number of items', function() {
             $countObj = $this->ElasticsearchFeeder->curlJsonGet($this->countRequestUrl, null);
-
-            var_dump($countObj);
-
             assert($countObj["count"] === 3, 'expected 3');
         });
     });
