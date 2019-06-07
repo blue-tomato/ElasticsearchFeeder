@@ -1,7 +1,7 @@
 <?php // testFullSyncCount.spec.php
 
 use Elasticsearch\ClientBuilder;
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
 describe('ES Index after first batchSync', function() {
     beforeEach(function() {
