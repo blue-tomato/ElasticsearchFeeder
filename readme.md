@@ -80,7 +80,7 @@ This module passes the following arguments to your schema function.
 - @arg1 `$page` the ProcessWire page WireArray
 
 ```php
-function newsDetailsPage($page, $ElasticsearchFeeder, $indexPrefix) {
+function newsDetailsPage($page) {
 
   // don't send page to Elasticsearch in case we don't want to
   if($page->property->value == "xyz") { return false; }
