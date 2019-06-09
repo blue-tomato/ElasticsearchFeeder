@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![ProcessWire 3](https://img.shields.io/badge/ProcessWire-3.x-orange.svg)](https://github.com/processwire/processwire)
+[![CircleCI](https://circleci.com/gh/blue-tomato/ElasticsearchFeeder/tree/master.svg?style=svg)](https://circleci.com/gh/blue-tomato/ElasticsearchFeeder/tree/master)
 
 This ElasticSearch module for [ProcessWire CMS/CMF](http://processwire.com/) will sync your page content to an ElasticSearch index, which provides you a convenient way to search it.
 
@@ -25,7 +26,7 @@ This ElasticSearch module for [ProcessWire CMS/CMF](http://processwire.com/) wil
 
 ## Prerequisites
 
-Before you'll start using this module, make sure it's compatible with your technical ElasticSearch setup and that it's fulfills your content indexing requires. We've created this module to support a `bonsai.io` (alternatives: [AWS ES](https://aws.amazon.com/de/elasticsearch-service/), [Elastic Cloud](https://www.elastic.co/cloud), etc.) hosted ElasticSearch SaaS instance. The most important part to consider when evaluating the `module <> ES SaaS provider` relation is, whether it's possible to connect to the ES instance via a URL with authentication included. Meaning a URL base pattern like...
+Before you'll start using this module, make sure it's compatible with your technical ElasticSearch setup and that it's fulfills your content indexing requires. We've created this module to support a `bonsai.io` (alternatives: [AWS ES](https://aws.amazon.com/de/elasticsearch-service/), [Elastic Cloud](https://www.elastic.co/cloud), etc.) hosted ElasticSearch SaaS instance. It should also work with local ElasticSearch instances or within Docker-Containers. The most important part to consider when evaluating the `module <> ES SaaS provider` relation is, whether it's possible to connect to the ES instance via a URL with authentication included. Meaning a URL base pattern like...
 
 `https://{ES_ACCESS_KEY}:{ES_ACCESS_SECRET}@{ES_INSTANCE_URL}.bonsaisearch.net\`
 
@@ -53,8 +54,8 @@ Configure the module in your ProcessWire module backend (which will be available
 
 - define ES backend protocol (http or https)
 - insert `ES_ACCESS_HOST`
-- insert `ES_ACCESS_KEY`
-- insert `ES_ACCESS_SECRET`
+- insert `ES_ACCESS_KEY` (optional)
+- insert `ES_ACCESS_SECRET` (optional)
 - insert the path to your schema (see [Schema](#schema) to see how those work)
 - optionally insert a prefix string that'll be used when hashing your ES ids
 - insert template configurations (see [Schema](#schema) to see how those work)
@@ -62,17 +63,17 @@ Configure the module in your ProcessWire module backend (which will be available
 
 ### Schema
 
-Setup a schema or multiple schemas to define which content(s) will be shipped to your ElasticSearch instance. Consider to place your schema files with a `.schema` file ending in the directory path you declared when configuring your module in the ProcessWire backend.
+Setup a schema or multiple schemas to define which content(s) will be shipped to your ElasticSearch instance. Consider to place your schema files with a `.schema.php` file ending in the directory path you declared when configuring your module in the ProcessWire backend.
 
 Basically said: for each ElasticSearch document type, there must be a PHP function returning the contents to be indexed in your ElasticSearch instance.
 The naming convention of this function has to be the `camelCased` document type name you declare in the ProcessWire backend module configuration. So i.e.: a document type named **news-details-page** in the ProcessWire backend requires schema function named **newsDetailsPage**.
 
-The filename itself has to be the same name as the template name. I.e.: **news-details-page.php** should be **news-details-page.schema**
+The filename itself has to be the same name as the template name. I.e.: **news-details-page.php** should be **news-details-page.schema.php**
 
 #### Page Filtering in Schema
 If a Schema Function returns `false` as value, the page will not be sent to ElasticSearch. You can use this for filtering you pages and sending only specific pages from this template to ElasticSearch.
 
-#### Schema Function (i.e. news-details-page.schema)
+#### Schema Function (i.e. news-details-page.schema.php)
 
 This module passes the following arguments to your schema function.
 
@@ -122,6 +123,18 @@ If you have your Server behind a proxy, you can add to your `config.php` file fo
 
 - `$config->httpProxy = "your-http-proxy-server.xyz:8888";`
 - `$config->httpsProxy = "your-https-proxy-server.xyz:5394";`
+
+### Override ElasticSearch Connection throw config.php
+You can override your Connection to ElasticSearch throw `$config->elasticsearchFeederConnectionOverride`. E.g. if you want to work local or on stage Servers with your local ElasticSearch Server but let the Database values untouched.
+
+```php
+$config->elasticsearchFeederConnectionOverride = [
+  "es_protocol" => "http",
+  "es_host" => "localhost:9200",
+  "es_access_key" => "",
+  "es_access_secret" => ""
+];
+```
 
 ### Deactivate ElasticSearchFeeder throw config.php
 If you want to prevent to send pages to ElasticSearch from your development or staging server but don't want to deactivate the module in the database, you can add `$config->elasticsearchFeederDisabled = true` to your `config.php` or `config-dev.php` file. This will prevent of adding the necessary hooks for the indexation.

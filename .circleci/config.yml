@@ -1,0 +1,67 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.3.6-cli-stretch
+        name: app
+        environment:
+          PW_ENV: testing
+      - image: circleci/mysql:8.0.4
+        name: db
+        command: [--default-authentication-plugin=mysql_native_password]
+        environment:
+          MYSQL_DATABASE: test_database
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_password
+      - image: elasticsearch:6.8.0
+        name: es
+    steps:
+
+      # checkout source code
+      - checkout
+
+      - run:
+          name: Install Stuff We Need
+          command: |
+            sudo apt-get install -y libpng-dev zziplib-bin zlib1g-dev
+            sudo docker-php-ext-install gd pdo pdo_mysql mysqli
+            sudo composer self-update
+            sudo composer global require wireshell/wireshell
+            sudo composer global require peridot-php/peridot
+
+      - run:
+          name: Install Processwire and Prepare ElasticsearchFeeder Module
+          # Install Processwire Version 3.0.133 which supports $page->meta()
+          # https://github.com/processwire/processwire/commit/204335e2d336b0931d96843f031daf68962cbc1c
+          command: |
+            sudo mkdir ../ElasticsearchFeeder && sudo mv * ../ElasticsearchFeeder
+            sudo /root/.composer/vendor/bin/wireshell new processwire --sha=204335e2d336b0931d96843f031daf68962cbc1c --profile=default --dbEngine=MyISAM --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
+            sudo mv ../ElasticsearchFeeder processwire/site/modules/
+
+      - run:
+          name: Install Module, Set Module Config, Setup Test Schema
+          command: |
+            sudo /root/.composer/vendor/bin/wireshell module:enable ElasticsearchFeeder
+            sudo php processwire/site/modules/ElasticsearchFeeder/tests/setup/bootstrap.php
+            sudo mkdir processwire/site/templates/elasticSearchSchema
+            sudo mv processwire/site/modules/ElasticsearchFeeder/tests/setup/basic-page.schema.php processwire/site/templates/elasticSearchSchema
+
+      - run:
+          name: Make ElasticsearchFeeder batchSync
+          # after sync, the task has to sleep for a short time. ES need that time to create the index.
+          # too fast queries to the index after sync will lead into errors because of an empty index
+          command: |
+            sudo php processwire/site/modules/ElasticsearchFeeder/batchSync.php
+            sleep 10s
+
+      - run:
+          name: Run Tests
+          working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder/tests/cases
+          command: |
+            sudo /root/.composer/vendor/bin/peridot testFullSyncCount.spec.php
+          #sudo /root/.composer/vendor/bin/peridot unpublishPage.spec.php
