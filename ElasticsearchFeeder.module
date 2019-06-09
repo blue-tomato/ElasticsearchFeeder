@@ -17,7 +17,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
 			'autoload' => true,
-			'requires' => 'ProcessWire>=3.0.133' //we need $page->meta() feature
+			'requires' => 'ProcessWire>=3.0.132' // 3.0.133 we need $page->meta() feature
 		);
 	}
 
