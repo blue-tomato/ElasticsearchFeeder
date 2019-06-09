@@ -542,8 +542,8 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	protected function getElasticSearchHost() {
 
 		$config = Wire::getFuel('config');
-		if(isset($config->elasticsearchFeederConnectionOverride->es_host)) {
-			return $config->elasticsearchFeederConnectionOverride->es_host;
+		if(isset($config->elasticsearchFeederConnectionOverride['es_host'])) {
+			return $config->elasticsearchFeederConnectionOverride['es_host'];
 		}
 
 		return $this->get('es_host');
@@ -561,8 +561,8 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
   protected function getElasticSearchAccessKey() {
 
 		$config = Wire::getFuel('config');
-		if(isset($config->elasticsearchFeederConnectionOverride->es_access_key)) {
-			return $config->elasticsearchFeederConnectionOverride->es_access_key;
+		if(isset($config->elasticsearchFeederConnectionOverride['es_access_key'])) {
+			return $config->elasticsearchFeederConnectionOverride['es_access_key'];
 		}
 
 		return $this->get('es_access_key');
@@ -571,8 +571,8 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
   protected function getElasticSearchAccessSecret() {
 
 		$config = Wire::getFuel('config');
-		if(isset($config->elasticsearchFeederConnectionOverride->es_access_secret)) {
-			return $config->elasticsearchFeederConnectionOverride->es_access_secret;
+		if(isset($config->elasticsearchFeederConnectionOverride['es_access_secret'])) {
+			return $config->elasticsearchFeederConnectionOverride['es_access_secret'];
 		}
 
 		return $this->get('es_access_secret');
@@ -581,8 +581,8 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
   protected function getElasticSearchProtocol() {
 
 		$config = Wire::getFuel('config');
-		if(isset($config->elasticsearchFeederConnectionOverride->es_protocol)) {
-			return $config->elasticsearchFeederConnectionOverride->es_protocol;
+		if(isset($config->elasticsearchFeederConnectionOverride['es_protocol'])) {
+			return $config->elasticsearchFeederConnectionOverride['es_protocol'];
 		}
 
     return $this->get('es_protocol');
