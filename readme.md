@@ -78,8 +78,6 @@ If a Schema Function returns `false` as value, the page will not be sent to Elas
 This module passes the following arguments to your schema function.
 
 - @arg1 `$page` the ProcessWire page WireArray
-- @arg2 `$ElasticsearchFeeder` this module, primarily to use it's static method **createElasticSearchDocumentHashedId($page->id, $indexPrefix)** to assign ElasticSeach IDs to your document content.
-- @arg3 `$indexPrefix` the index prefix you declared when configuring this module in the ProcessWire backend
 
 ```php
 function newsDetailsPage($page, $ElasticsearchFeeder, $indexPrefix) {
@@ -91,6 +89,11 @@ function newsDetailsPage($page, $ElasticsearchFeeder, $indexPrefix) {
   $document = [];
   $document['type'] = 'news-detailspage';
   $document['name'] = $page->title;
+
+  // if you need to generate an ElasticSeach ID withtin a schema file
+  $ElasticsearchFeeder = wire('modules')->get('ElasticsearchFeeder');
+  $indexPrefix = $ElasticsearchFeeder->getIndexPrefix();
+  $document['some_other_page'] = $ElasticsearchFeeder->createElasticSearchDocumentHashedId($page->get('some_other_page')->id, $indexPrefix),
 
   // send $document back to ElasticsearchFeeder module
   return $document;
