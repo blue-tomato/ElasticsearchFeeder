@@ -64,4 +64,4 @@ jobs:
           working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder/tests/cases
           command: |
             sudo /root/.composer/vendor/bin/peridot testFullSyncCount.spec.php
-            sudo /root/.composer/vendor/bin/peridot unpublishPage.spec.php
+          #sudo /root/.composer/vendor/bin/peridot unpublishPage.spec.php
