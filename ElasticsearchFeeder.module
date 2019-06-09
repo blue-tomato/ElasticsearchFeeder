@@ -374,7 +374,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		}
 	}
 
-  public function dashesToCamelCase(string $string, boolean $capitalizeFirstCharacter = false) {
+  public function dashesToCamelCase(string $string, boolean $capitalizeFirstCharacter = null) {
       $str = str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
       if (!$capitalizeFirstCharacter) {
           $str[0] = strtolower($str[0]);
@@ -492,10 +492,18 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	}
 
 	public function getElasticSearchUrlBase() {
-		return sprintf('%s://%s:%s@%s',
+
+		$credentials = "";
+		if(!empty($this->getElasticSearchAccessKey()) && !empty($this->getElasticSearchAccessSecret())) {
+			$credentials = sprintf('%s:%s@',
+	      $this->getElasticSearchAccessKey(),
+	      $this->getElasticSearchAccessSecret()
+			);
+		}
+
+		return sprintf('%s://%s%s',
       $this->getElasticSearchProtocol(),
-      $this->getElasticSearchAccessKey(),
-      $this->getElasticSearchAccessSecret(),
+      $credentials,
 			$this->getElasticSearchHost()
 		);
 	}
