@@ -54,8 +54,8 @@ Configure the module in your ProcessWire module backend (which will be available
 
 - define ES backend protocol (http or https)
 - insert `ES_ACCESS_HOST`
-- insert `ES_ACCESS_KEY`
-- insert `ES_ACCESS_SECRET`
+- insert `ES_ACCESS_KEY` (optional)
+- insert `ES_ACCESS_SECRET` (optional)
 - insert the path to your schema (see [Schema](#schema) to see how those work)
 - optionally insert a prefix string that'll be used when hashing your ES ids
 - insert template configurations (see [Schema](#schema) to see how those work)
@@ -123,6 +123,18 @@ If you have your Server behind a proxy, you can add to your `config.php` file fo
 
 - `$config->httpProxy = "your-http-proxy-server.xyz:8888";`
 - `$config->httpsProxy = "your-https-proxy-server.xyz:5394";`
+
+### Override ElasticSearch Connection throw config.php
+You can override your Connection to ElasticSearch throw `$config->elasticsearchFeederConnectionOverride`. E.g. if you want to work local or on stage Servers with your local ElasticSearch Server but let the Database values untouched.
+
+```php
+$config->elasticsearchFeederConnectionOverride = [
+  "es_protocol" => "http",
+  "es_host" => "localhost:9200",
+  "es_access_key" => "",
+  "es_access_secret" => ""
+];
+```
 
 ### Deactivate ElasticSearchFeeder throw config.php
 If you want to prevent to send pages to ElasticSearch from your development or staging server but don't want to deactivate the module in the database, you can add `$config->elasticsearchFeederDisabled = true` to your `config.php` or `config-dev.php` file. This will prevent of adding the necessary hooks for the indexation.

@@ -17,7 +17,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
 			'autoload' => true,
-			'requires' => 'ProcessWire>=3.0.16'
+			'requires' => 'ProcessWire>=3.0.133' //we need $page->meta() feature
 		);
 	}
 
@@ -112,6 +112,10 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		// i.e. for development or stage environments
 		if($config->elasticsearchFeederDisabled) {
 			wire()->warning("Warning: ElasticsearchFeeder is deactivated throw config.php");
+		} elseif($data['es_debug_mode'] && $data['es_debug_mode'] == 'on') {
+			wire()->warning("Warning: ElasticSearch Debug Mode is enabled");
+		} elseif($config->elasticsearchFeederConnectionOverride) {
+			wire()->warning("Warning: ElasticsearchFeeder Server Connection are overwritten by config.php");
 		}
 
 		$field = $modules->get('InputfieldSelect');
@@ -250,7 +254,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return $fields;
 	}
 
-	public function reIndexButtonClick($event) {
+	public function reIndexButtonClick(HookEvent $event) {
 
 		// check whether reIndex button was clicked
 		// to to say an eventListener checking the proper url parameter in case of a admin-page reload
@@ -270,7 +274,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		$this->session->message($msg);
 	}
 
-	public function sendDocumentToElasticSearch($page) {
+	public function sendDocumentToElasticSearch(Page $page) {
     //check whether template is allowed for indexation (set on config page)
 		if(!$this->checkAllowedTemplate($page->template)) return;
 
@@ -289,7 +293,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			include_once($documentTypeSchemaPath);
 			// from now on $documentSchemaFunctionName() from the schema file should be available as a function
 			$indexPrefix = $this->getIndexPrefix();
-			$document = $documentSchemaFunctionName($page, $this, $indexPrefix);
+			$document = $documentSchemaFunctionName($page);
 			$document["page-id"] = $page->id;
 			$document["prefix"] = $this->getIndexPrefix();
 		} else {
@@ -370,7 +374,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		}
 	}
 
-  public function dashesToCamelCase($string, $capitalizeFirstCharacter = false) {
+  public function dashesToCamelCase(string $string, boolean $capitalizeFirstCharacter = false) {
       $str = str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
       if (!$capitalizeFirstCharacter) {
           $str[0] = strtolower($str[0]);
@@ -378,7 +382,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
       return $str;
   }
 
-	public function afterPageRestored($event) {
+	public function afterPageRestored(HookEvent $event) {
 		$page = $event->arguments[0];
 
 		if(!$page->isTrash() && $page->isPublic() && $this->checkAllowedTemplate($page->template)) {
@@ -393,7 +397,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 	}
 
-	public function beforePageDelete($event) {
+	public function beforePageDelete(HookEvent $event) {
 
 		$page = $event->arguments[0];
 		$res = $this->curlJsonDelete($page);
@@ -405,7 +409,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		}
 	}
 
-	public function beforePageTrash($event) {
+	public function beforePageTrash(HookEvent $event) {
 		$page = $event->arguments[0];
 		$res = $this->curlJsonDelete($page);
 
@@ -416,17 +420,12 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		}
 	}
 
-	public function curlJsonGet($url, $data) {
+	public function curlJsonGet(string $url, $data) {
 
 		return $this->curlJsonRequest(null, $url, $data);
 	}
 
-	protected function curlJsonPut($id, $data) {
-
-		return $this->curlJsonRequest('PUT', (int)$id, $data);
-	}
-
-	public function curlJsonDeleteByElasticSearchId($esDocumentId, $type, $index)
+	public function curlJsonDeleteByElasticSearchId(string $esDocumentId, string $type, string $index)
 	{
 		$url = sprintf('%s/%s/%s/%s',
 			$this->getElasticSearchUrlBase(),
@@ -438,7 +437,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return $this->curlJsonRequest('DELETE', $url);
 	}
 
-	protected function curlJsonDelete($page)
+	protected function curlJsonDelete(Page $page)
 	{
 		$esDocumentId = $this->createElasticSearchDocumentHashedId($page->id, $this->getIndexPrefix());
 		$type = $this->getElasticSearchDocumentType($page->template);
@@ -453,7 +452,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return $this->curlJsonRequest('DELETE', $url);
 	}
 
-	public function curlJsonRequest($method=null, $url='', $data=null)
+	public function curlJsonRequest($method=null, string $url='', $data=null)
 	{
 		$config = Wire::getFuel('config');
 
@@ -501,11 +500,11 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		);
 	}
 
-  protected function getElasticSearchDocumentType($template) {
+  protected function getElasticSearchDocumentType(Template $template) {
     return $this->get("es_template_type_$template->id");
 	}
 
-	public function checkAllowedTemplate($template) {
+	public function checkAllowedTemplate(Template $template) {
 
 		// WARNING: don't allow system templates like admin, roles or permissions...
 		if($template->flags == Template::flagSystem) return false;
@@ -514,11 +513,11 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
     return (isset($value) && $value == 'yes') ? true : false;
 	}
 
-  public static function createElasticSearchDocumentHashedId($id, $prefix = '') {
+  public function createElasticSearchDocumentHashedId(string $id, string $prefix = '') {
 		return sha1($prefix.$id);
 	}
 
-  protected function getElasticSearchDocumentIndexUrl($template, $type, $esId) {
+  protected function getElasticSearchDocumentIndexUrl(Template $template, string $type, string $esId) {
     return sprintf('%s/%s/%s/%s',
       $this->getElasticSearchUrlBase(),
       $this->getElasticSearchIndexName($template),
@@ -533,6 +532,12 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	}
 
 	protected function getElasticSearchHost() {
+
+		$config = Wire::getFuel('config');
+		if(isset($config->elasticsearchFeederConnectionOverride->es_host)) {
+			return $config->elasticsearchFeederConnectionOverride->es_host;
+		}
+
 		return $this->get('es_host');
 	}
 
@@ -547,20 +552,35 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
   protected function getElasticSearchAccessKey() {
 
+		$config = Wire::getFuel('config');
+		if(isset($config->elasticsearchFeederConnectionOverride->es_access_key)) {
+			return $config->elasticsearchFeederConnectionOverride->es_access_key;
+		}
+
 		return $this->get('es_access_key');
 	}
 
   protected function getElasticSearchAccessSecret() {
+
+		$config = Wire::getFuel('config');
+		if(isset($config->elasticsearchFeederConnectionOverride->es_access_secret)) {
+			return $config->elasticsearchFeederConnectionOverride->es_access_secret;
+		}
 
 		return $this->get('es_access_secret');
 	}
 
   protected function getElasticSearchProtocol() {
 
+		$config = Wire::getFuel('config');
+		if(isset($config->elasticsearchFeederConnectionOverride->es_protocol)) {
+			return $config->elasticsearchFeederConnectionOverride->es_protocol;
+		}
+
     return $this->get('es_protocol');
   }
 
-  public function getElasticSearchIndexName($template) {
+  public function getElasticSearchIndexName(Template $template) {
 		return $this->get("es_template_indexname_$template->id");
   }
 
@@ -569,7 +589,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return (isset($debugMode) && $debugMode == 'on') ? true : false;
 	}
 
-  public function indexAllAllowedPages($templateId = false) {
+  public function indexAllAllowedPages(string $templateId = '') {
 		$templates = Wire::getFuel('templates');
 		$pages = Wire::getFuel('pages');
 		$config = Wire::getFuel('config');
@@ -577,9 +597,9 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		$allowedTemplates = [];
 		foreach($templates as $template) {
 
-			if($templateId == false && $this->checkAllowedTemplate($template)) { // check for all templates
+			if(empty($templateId) && $this->checkAllowedTemplate($template)) { // check for all templates
 				array_push($allowedTemplates, $template->id);
-			} else if($templateId != false && $templateId == $template->id && $this->checkAllowedTemplate($template)) { // check only one template
+			} else if(!empty($templateId) && $templateId == $template->id && $this->checkAllowedTemplate($template)) { // check only one template
 				array_push($allowedTemplates, $template->id);
 			}
 
