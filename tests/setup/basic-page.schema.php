@@ -1,6 +1,6 @@
 <?php
 
-function basicPage($page, $ElasticsearchFeeder, $indexPrefix) {
+function basicPage($page) {
 
   $document = [];
   $document['type'] = 'basic-page';
