@@ -42,11 +42,11 @@ composer require blue-tomato/elasticsearch-feeder
 
 2. ProcessWire will detect the module and list it in the backend's `Modules` > `Site` > `ElasticsearchFeeder` section. Navigate there and install it.
 
-*NOTE: Installing the module will add a `elasticsearch_lastindex` field to your templates when the page gets indexed initially (so on runtime), which will only be visible to superusers.*
-
 ## Usage
 
 To use this module you'll have to setup some module configurations and schema instructions.
+
+*NOTE: This module will save time of the last update for each page in a meta field called `elasticsearch_lastindex`. You can access this value with `$page->meta('elasticsearch_lastindex')`*
 
 ### Configuration
 
@@ -60,6 +60,7 @@ Configure the module in your ProcessWire module backend (which will be available
 - optionally insert a prefix string that'll be used when hashing your ES ids
 - insert template configurations (see [Schema](#schema) to see how those work)
 - (re)index all pages matching our module configuration by clicking the "Index All Pages" button. *NOTE: using this option can take quite a long time (primarily depending on how much ProcessWire pages you're going to send to the ElasticSearch index).*
+- or use the batchSync.php script (description below)
 
 ### Schema
 
