@@ -38,7 +38,7 @@ describe('ElasticsearchFeeder Tests', function() {
         it('query should return empty result', function() {
           $this->page->addStatus('unpublished');
           $this->page->save();
-          sleep(10); // prevent race condition
+          sleep(5); // prevent race condition
           $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
           assert($result["found"] == false, 'expected false');
         });
@@ -48,7 +48,7 @@ describe('ElasticsearchFeeder Tests', function() {
         it('query should return page with correct page-id', function() {
           $this->page->addStatus('published');
           $this->page->save();
-          sleep(10); // prevent race condition
+          sleep(5); // prevent race condition
           $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
           assert($result["found"] == true, 'expected true');
         });
@@ -59,9 +59,8 @@ describe('ElasticsearchFeeder Tests', function() {
           $newTitle = 'Hello From Peridot';
           $this->page->set('title', $newTitle);
           $this->page->save();
-          sleep(20); // prevent race condition
+          sleep(5); // prevent race condition
           $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
-          var_dump($result);
           assert($result["_source"]["title"] == $newTitle, "expected: $newTitle");
         });
     });
@@ -76,7 +75,7 @@ describe('ElasticsearchFeeder Tests', function() {
     describe('Remove specific Page', function() {
         it('query should return empty result', function() {
           $this->page->delete();
-          sleep(10); // prevent race condition
+          sleep(5); // prevent race condition
           $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
           assert($result["found"] == false, 'expected false');
         });
