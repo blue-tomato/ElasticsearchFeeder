@@ -71,7 +71,6 @@ describe('ElasticsearchFeeder Tests', function() {
         });
     });
 
-
     describe('Remove specific Page', function() {
         it('query should return empty result', function() {
           $this->page->delete();
