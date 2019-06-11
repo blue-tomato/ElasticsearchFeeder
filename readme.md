@@ -38,7 +38,7 @@ E.g. for local ElasticSearch: `http://localhost:9200`
 
 1. Execute the following command in the root directory of your ProcessWire installation:
 
-```
+```bash
 composer require blue-tomato/elasticsearch-feeder
 ```
 
