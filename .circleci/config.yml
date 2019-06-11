@@ -62,6 +62,4 @@ jobs:
       - run:
           name: Run Tests
           working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder/tests/cases
-          command: |
-            sudo /root/.composer/vendor/bin/peridot testFullSyncCount.spec.php
-            sudo /root/.composer/vendor/bin/peridot unpublishPage.spec.php
+          command: sudo /root/.composer/vendor/bin/peridot basic-tests.spec.php
