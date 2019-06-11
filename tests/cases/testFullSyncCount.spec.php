@@ -23,9 +23,3 @@ describe('ES Index after first batchSync', function() {
         });
     });
 });
-
-# node test 1 execut node script check count --> request ES
-# unpublish something --> node test 2
-# delete something --> node test 3
-# republish something --> node test 4
-# save something --> node test 5

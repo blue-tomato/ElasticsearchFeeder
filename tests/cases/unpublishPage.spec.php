@@ -20,7 +20,7 @@ describe('unpublish a page', function() {
 
     });
 
-    describe('page should not be in the ES index', function() {
+    describe('page should be in the ES index', function() {
         it('query should return page with correct page-id', function() {
           $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
           assert($result["found"] == true, 'expected true');
@@ -32,6 +32,7 @@ describe('unpublish a page', function() {
         it('query should return empty result', function() {
           $this->page->addStatus(Page::statusUnpublished);
           $this->page->save();
+          sleep(10); // prevent race condition
           $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
           assert($result["found"] == false, 'expected false');
         });
@@ -42,6 +43,3 @@ describe('unpublish a page', function() {
 # delete something --> node test 3
 # republish something --> node test 4
 # save something --> node test 5
-
-// 1.0.6 --> .schema to schema.php, first test setup
-// 1.1.0 --> finished tests, change from lastindex field to page->meta(), more type checks in class, public prefix function (umbau schema! und doku)
