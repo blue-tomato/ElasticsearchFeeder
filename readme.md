@@ -26,7 +26,7 @@ This ElasticSearch module for [ProcessWire CMS/CMF](http://processwire.com/) wil
 
 ## Prerequisites
 
-Before you'll start using this module, make sure it's compatible with your technical ElasticSearch setup and that it's fulfills your content indexing requires. We've created this module to support a `bonsai.io` (alternatives: [AWS ES](https://aws.amazon.com/de/elasticsearch-service/), [Elastic Cloud](https://www.elastic.co/cloud), etc.) hosted ElasticSearch SaaS instance. It should also work with own-hosted ElasticSearch instances or within Docker-Containers.
+Before you'll start using this module, make sure it's compatible with your technical ElasticSearch setup and that it's fulfills your content indexing requires. We've created this module to support a `bonsai.io` (alternatives: [AWS ES](https://aws.amazon.com/de/elasticsearch-service/), [Elastic Cloud](https://www.elastic.co/cloud), [Google Cloud](https://console.cloud.google.com/marketplace/details/google/elasticsearch), etc.) hosted ElasticSearch SaaS instance. It should also work with own-hosted ElasticSearch instances or within Docker-Containers.
 
 Usually ES SaaS providers inform about this in a setup/configuration section in their backend.
 
