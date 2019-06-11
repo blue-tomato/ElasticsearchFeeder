@@ -60,6 +60,7 @@ describe('ElasticsearchFeeder Tests', function() {
           $this->page->setAndSave('title', $newTitle);
           sleep(10); // prevent race condition
           $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
+          var_dump($result);
           assert($result["_source"]["title"] == $newTitle, "expected: $newTitle");
         });
     });
