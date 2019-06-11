@@ -64,7 +64,15 @@ describe('ElasticsearchFeeder Tests', function() {
         });
     });
 
-    describe('Publish specific Page', function() {
+    describe('Specific Page should have meta value elasticsearch_lastindex', function() {
+        it('should return not empty value', function() {
+          $metaValue = $this->page->meta(elasticsearch_lastindex);
+          assert(isset($metaValue) && !empty($metaValue), "expected not empty value");
+        });
+    });
+
+
+    describe('Remove specific Page', function() {
         it('query should return empty result', function() {
           $this->page->delete();
           sleep(10); // prevent race condition
