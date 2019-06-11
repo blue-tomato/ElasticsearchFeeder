@@ -26,11 +26,12 @@ This ElasticSearch module for [ProcessWire CMS/CMF](http://processwire.com/) wil
 
 ## Prerequisites
 
-Before you'll start using this module, make sure it's compatible with your technical ElasticSearch setup and that it's fulfills your content indexing requires. We've created this module to support a `bonsai.io` (alternatives: [AWS ES](https://aws.amazon.com/de/elasticsearch-service/), [Elastic Cloud](https://www.elastic.co/cloud), etc.) hosted ElasticSearch SaaS instance. It should also work with local ElasticSearch instances or within Docker-Containers. The most important part to consider when evaluating the `module <> ES SaaS provider` relation is, whether it's possible to connect to the ES instance via a URL with authentication included. Meaning a URL base pattern like...
+Before you'll start using this module, make sure it's compatible with your technical ElasticSearch setup and that it's fulfills your content indexing requires. We've created this module to support a `bonsai.io` (alternatives: [AWS ES](https://aws.amazon.com/de/elasticsearch-service/), [Elastic Cloud](https://www.elastic.co/cloud), etc.) hosted ElasticSearch SaaS instance. It should also work with own-hosted ElasticSearch instances or within Docker-Containers.
 
-`https://{ES_ACCESS_KEY}:{ES_ACCESS_SECRET}@{ES_INSTANCE_URL}.bonsaisearch.net\`
+Usually ES SaaS providers inform about this in a setup/configuration section in their backend.
 
-Usually ES SaaS providers inform about this in a setup/configuration section in their backend. In case your own-hosted ES instance is able to provide access like mentioned above, you're also good to go with this module.
+E.g. for bonsai.io: `https://{ES_ACCESS_KEY}:{ES_ACCESS_SECRET}@{ES_INSTANCE_URL}.bonsaisearch.net`
+E.g. for local ElasticSearch: `http://localhost:9200`
 
 ## Installation
 
