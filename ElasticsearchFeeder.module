@@ -19,7 +19,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			'autoload' => true,
 			'requires' => [
 				'PHP>=7.0.0',
-				'ProcessWire>=3.0.133'
+				'ProcessWire>=3.0.132' //need 3.0.133 when its released
       ]
 		);
 	}
