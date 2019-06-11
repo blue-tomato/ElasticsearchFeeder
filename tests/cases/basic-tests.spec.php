@@ -57,8 +57,9 @@ describe('ElasticsearchFeeder Tests', function() {
     describe('Change something in specific page', function() {
         it('query should return the page with the changed value', function() {
           $newTitle = 'Hello From Peridot';
-          $this->page->setAndSave('title', $newTitle);
-          sleep(10); // prevent race condition
+          $this->page->set('title', $newTitle);
+          $this->page->save();
+          sleep(20); // prevent race condition
           $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
           var_dump($result);
           assert($result["_source"]["title"] == $newTitle, "expected: $newTitle");
