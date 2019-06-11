@@ -10,23 +10,30 @@ describe('unpublish a page', function() {
       $this->ElasticsearchFeeder = $modules->get('ElasticsearchFeeder');
       $template = $templates->get('basic-page');
 
-      $baseUrl = $this->ElasticsearchFeeder->getElasticSearchUrlBase();
-      $indexName = $this->ElasticsearchFeeder->getElasticSearchIndexName($template);
-      $prefix= $this->ElasticsearchFeeder->getIndexPrefix();
+      $this->baseUrl = $this->ElasticsearchFeeder->getElasticSearchUrlBase();
+      $this->indexName = $this->ElasticsearchFeeder->getElasticSearchIndexName($template);
+      $this->prefix= $this->ElasticsearchFeeder->getIndexPrefix();
 
-      $page= $pages->find("template=$template")->first();
+      $this->page= $pages->find("template=$template")->first();
 
-      $page->addStatus(Page::statusUnpublished);
-      $page->save();
-
-      $this->esId = $this->ElasticsearchFeeder->createElasticSearchDocumentHashedId($page->id, $prefix);
+      $this->esId = $this->ElasticsearchFeeder->createElasticSearchDocumentHashedId($this->page->id, $this->prefix);
 
     });
 
     describe('page should not be in the ES index', function() {
+        it('query should return page with correct page-id', function() {
+          $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
+          assert($result["found"] == true, 'expected true');
+        });
+    });
+
+
+    describe('page should not be in the ES index', function() {
         it('query should return empty result', function() {
-            //$countObj = $this->ElasticsearchFeeder->curlJsonGet($this->countRequestUrl, null);
-            //assert($countObj["count"] === 3, 'expected 3');
+          $this->page->addStatus(Page::statusUnpublished);
+          $this->page->save();
+          $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);
+          assert($result["found"] == false, 'expected false');
         });
     });
 });
