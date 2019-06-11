@@ -66,7 +66,7 @@ describe('ElasticsearchFeeder Tests', function() {
 
     describe('Specific Page should have meta value elasticsearch_lastindex', function() {
         it('should return not empty value', function() {
-          $metaValue = $this->page->meta(elasticsearch_lastindex);
+          $metaValue = $this->page->meta('elasticsearch_lastindex');
           assert(isset($metaValue) && !empty($metaValue), "expected not empty value");
         });
     });
