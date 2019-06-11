@@ -31,6 +31,7 @@ Before you'll start using this module, make sure it's compatible with your techn
 Usually ES SaaS providers inform about this in a setup/configuration section in their backend.
 
 E.g. for bonsai.io: `https://{ES_ACCESS_KEY}:{ES_ACCESS_SECRET}@{ES_INSTANCE_URL}.bonsaisearch.net`
+
 E.g. for local ElasticSearch: `http://localhost:9200`
 
 ## Installation
