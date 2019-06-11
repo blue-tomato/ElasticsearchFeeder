@@ -27,10 +27,9 @@ describe('unpublish a page', function() {
         });
     });
 
-
     describe('page should not be in the ES index', function() {
         it('query should return empty result', function() {
-          $this->page->addStatus(Page::statusUnpublished);
+          $this->page->addStatus('unpublished');
           $this->page->save();
           sleep(10); // prevent race condition
           $result = $this->ElasticsearchFeeder->curlJsonGet("{$this->baseUrl}/{$this->indexName}/_doc/{$this->esId}", null);

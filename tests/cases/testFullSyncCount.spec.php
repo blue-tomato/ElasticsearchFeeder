@@ -4,7 +4,7 @@ describe('ES Index after first batchSync', function() {
     beforeEach(function() {
 
       // include PW API
-      include_once(__DIR__ . "/../../../../../index.php");
+      include(__DIR__ . "/../../../../../index.php");
 
       // load ElasticsearchFeeder module class
       $this->ElasticsearchFeeder = $modules->get('ElasticsearchFeeder');
