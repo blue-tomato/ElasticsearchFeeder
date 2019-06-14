@@ -2,7 +2,7 @@
 
 class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule {
 
-	private $elasticSearchStatusMetaKeyName = 'elasticsearch_lastindex';
+	private $elasticSearchMetaKeyName = 'elasticsearchfeeder_meta';
 
 	/**
 	 * Description of the module including meta data
@@ -19,7 +19,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			'autoload' => true,
 			'requires' => [
 				'PHP>=7.0.0',
-				'ProcessWire>=3.0.132' //need 3.0.133 when its released
+				'ProcessWire>=3.0.133'
       ]
 		);
 	}
@@ -262,7 +262,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 				return false;
 			} else {
 				//indexed successfully
-				return true;
+				return $id;
 			}
 		}
 
@@ -278,7 +278,10 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			$success = $this->sendDocumentToElasticSearch($page);
 
 			if($success) {
-				$page->meta($this->elasticSearchStatusMetaKeyName, date('c'));
+				$page->meta($this->elasticSearchMetaKeyName, [
+					"es_id" => $success,
+					"lastindex" => date('c')
+				]);
 				$this->session->message("Document successful sent to ElasticSearch.");
 			} else {
 				$this->session->warning("Can't sent document (pageId: {$page->id}) to ElasticSearch.", Notice::log);
@@ -561,7 +564,10 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 				$success = $this->sendDocumentToElasticSearch($page);
 
 				if($success) {
-					$page->meta($this->elasticSearchStatusMetaKeyName, date('c'));
+					$page->meta($this->elasticSearchMetaKeyName, [
+						"es_id" => $success,
+						"lastindex" => date('c')
+					]);
 
 					// output log in CLI batch import script
 					if($config->cli) {
