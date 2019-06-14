@@ -37,10 +37,10 @@ jobs:
       - run:
           name: Install Processwire and Prepare ElasticsearchFeeder Module
           # Install Processwire Version 3.0.133 which supports $page->meta()
-          # https://github.com/processwire/processwire/commit/204335e2d336b0931d96843f031daf68962cbc1c
+          # https://github.com/processwire/processwire/commit/bccdc2ace4fe8f229163f9c9dabf3678d144d89f
           command: |
             sudo mkdir ../ElasticsearchFeeder && sudo mv * ../ElasticsearchFeeder
-            sudo /root/.composer/vendor/bin/wireshell new processwire --sha=204335e2d336b0931d96843f031daf68962cbc1c --profile=default --dbEngine=MyISAM --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
+            sudo /root/.composer/vendor/bin/wireshell new processwire --sha=bccdc2ace4fe8f229163f9c9dabf3678d144d89f --profile=default --dbEngine=MyISAM --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
             sudo mv ../ElasticsearchFeeder processwire/site/modules/
 
       - run:
@@ -62,6 +62,4 @@ jobs:
       - run:
           name: Run Tests
           working_directory: ~/project/processwire/site/modules/ElasticsearchFeeder/tests/cases
-          command: |
-            sudo /root/.composer/vendor/bin/peridot testFullSyncCount.spec.php
-          #sudo /root/.composer/vendor/bin/peridot unpublishPage.spec.php
+          command: sudo /root/.composer/vendor/bin/peridot basic-tests.spec.php

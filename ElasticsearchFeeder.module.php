@@ -2,7 +2,7 @@
 
 class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule {
 
-	private $elasticSearchStatusFieldName = 'elasticsearch_lastindex';
+	private $elasticSearchMetaKeyName = 'elasticsearchfeeder_meta';
 
 	/**
 	 * Description of the module including meta data
@@ -12,12 +12,15 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 111,
-			'summary' => 'Schema-flexible module for getting your page into cloudhosted Elasticsearch like Bonsai or elastic.io.',
+			'version' => 120,
+			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
 			'autoload' => true,
-			'requires' => 'ProcessWire>=3.0.132' // 3.0.133 we need soon $page->meta() feature
+			'requires' => [
+				'PHP>=7.0.0',
+				'ProcessWire>=3.0.133'
+      ]
 		);
 	}
 
@@ -45,62 +48,6 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		$this->addHookAfter('Page::render', $this, 'reIndexButtonClick');
 	}
 
-	/**
-	 * An onInstall "event-listener" that sets up necessary module configurations
-	 *
-	 */
-	public function install() {
-		$fields = Wire::getFuel('fields');
-		$modules = Wire::getFuel('modules');
-
-		$elasticSearchFieldName = $this->elasticSearchStatusFieldName;
-
-		// create field (adding to templates will happen on runtime/first index)
-		if(!$fields->get($elasticSearchFieldName)) {
-			$field = new Field();
-			$field->type = $modules->get("FieldtypeText");
-			$field->name = $elasticSearchFieldName;
-			$field->label = "ElasticSearch Lastindex";
-			$field->value = '';
-
-			// works not well - hook will not always be executed with role superuser and if the hook is executed with i.e. author it can't write in the field
-			// $field->editRoles﻿﻿ = array('superuser');
-			// $field->viewRoles = array('superuser');
-
-			// instead of this, everybody are allowed to write in the field but the field is only visible to superusers in the frontend via the "visibility/collpased" setting
-			$field->collapsed = 7;
-
-			$field->save();
-		}
-	}
-
-	/**
-	 * An onUninstall "event-listener"
-	 *
-	 */
-
-	public function uninstall() {
-		$fields = Wire::getFuel('fields');
-		$templates = Wire::getFuel('templates');
-
-		$elasticSearchFieldName = $this->elasticSearchStatusFieldName;
-		$elasticSearchLastIndexField = $fields->get($elasticSearchFieldName);
-
-		if($elasticSearchLastIndexField) {
-
-			// remove field from templates
-			foreach($templates as $template) {
-				if($template->fields->hasField($elasticSearchFieldName)) {
-					$template->fields->remove($elasticSearchLastIndexField);
-					$template->fields->save();
-				}
-			}
-
-			// delete field from db
-			$fields->delete($elasticSearchLastIndexField);
-		}
-
-	}
 
 	public static function getModuleConfigInputfields(array $data) {
 		$fields = new InputfieldWrapper();
@@ -315,7 +262,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 				return false;
 			} else {
 				//indexed successfully
-				return true;
+				return $id;
 			}
 		}
 
@@ -328,18 +275,13 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		// check if the page isn't in the trash and is published and viewable for all
 		if(!$page->isTrash() && $page->isPublic() && $this->checkAllowedTemplate($page->template)) {
 
-			$elasticSearchFieldName = $this->elasticSearchStatusFieldName;
-
-			// add field to template if allowed and not existing
-			if(!$page->template->fields->hasField($elasticSearchFieldName)) {
-				$page->template->fields->add($elasticSearchFieldName);
-				$page->template->fields->save();
-			}
-
 			$success = $this->sendDocumentToElasticSearch($page);
 
 			if($success) {
-				$page->setAndSave($elasticSearchFieldName, date('c'), [ "quiet" => true, "noHooks" => true ]);
+				$page->meta($this->elasticSearchMetaKeyName, [
+					"es_id" => $success,
+					"lastindex" => date('c')
+				]);
 				$this->session->message("Document successful sent to ElasticSearch.");
 			} else {
 				$this->session->warning("Can't sent document (pageId: {$page->id}) to ElasticSearch.", Notice::log);
@@ -617,20 +559,15 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			$allowedTemplates = implode('|', $allowedTemplates);
 			$pagesToIndex = $pages->find("template=$allowedTemplates");
 
-			$elasticSearchFieldName = $this->elasticSearchStatusFieldName;
-
 			foreach($pagesToIndex as $page) {
-
-				// add field to template if allowed and not existing
-				if(!$page->template->fields->hasField($elasticSearchFieldName)) {
-					$page->template->fields->add($elasticSearchFieldName);
-					$page->template->fields->save();
-				}
 
 				$success = $this->sendDocumentToElasticSearch($page);
 
 				if($success) {
-					$page->setAndSave($elasticSearchFieldName, date('c'), [ "quiet" => true, "noHooks" => true ]);
+					$page->meta($this->elasticSearchMetaKeyName, [
+						"es_id" => $success,
+						"lastindex" => date('c')
+					]);
 
 					// output log in CLI batch import script
 					if($config->cli) {
@@ -641,10 +578,10 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 			}
 
-			return 'All pages sent to ElasticSearch.';
+			return "All pages sent to ElasticSearch.\n";
 
 		} else {
-			return 'No template choosen. You have to allow at least one template for the index.';
+			return "No template choosen. You have to allow at least one template for the index.\n";
 		}
 
 	}

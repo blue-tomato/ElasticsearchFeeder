@@ -26,27 +26,29 @@ This ElasticSearch module for [ProcessWire CMS/CMF](http://processwire.com/) wil
 
 ## Prerequisites
 
-Before you'll start using this module, make sure it's compatible with your technical ElasticSearch setup and that it's fulfills your content indexing requires. We've created this module to support a `bonsai.io` (alternatives: [AWS ES](https://aws.amazon.com/de/elasticsearch-service/), [Elastic Cloud](https://www.elastic.co/cloud), etc.) hosted ElasticSearch SaaS instance. It should also work with local ElasticSearch instances or within Docker-Containers. The most important part to consider when evaluating the `module <> ES SaaS provider` relation is, whether it's possible to connect to the ES instance via a URL with authentication included. Meaning a URL base pattern like...
+Before you'll start using this module, make sure it's compatible with your technical ElasticSearch setup and that it's fulfills your content indexing requires. We've created this module to support a `bonsai.io` (alternatives: [AWS ES](https://aws.amazon.com/de/elasticsearch-service/), [Elastic Cloud](https://www.elastic.co/cloud), [Google Cloud](https://console.cloud.google.com/marketplace/details/google/elasticsearch), etc.) hosted ElasticSearch SaaS instance. It should also work with own-hosted ElasticSearch instances or within Docker-Containers.
 
-`https://{ES_ACCESS_KEY}:{ES_ACCESS_SECRET}@{ES_INSTANCE_URL}.bonsaisearch.net\`
+Usually ES SaaS providers inform about this in a setup/configuration section in their backend.
 
-Usually ES SaaS providers inform about this in a setup/configuration section in their backend. In case your own-hosted ES instance is able to provide access like mentioned above, you're also good to go with this module.
+E.g. for bonsai.io: `https://{ES_ACCESS_KEY}:{ES_ACCESS_SECRET}@{ES_INSTANCE_URL}.bonsaisearch.net`
+
+E.g. for local ElasticSearch: `http://localhost:9200`
 
 ## Installation
 
 1. Execute the following command in the root directory of your ProcessWire installation:
 
-```
+```bash
 composer require blue-tomato/elasticsearch-feeder
 ```
 
 2. ProcessWire will detect the module and list it in the backend's `Modules` > `Site` > `ElasticsearchFeeder` section. Navigate there and install it.
 
-*NOTE: Installing the module will add a `elasticsearch_lastindex` field to your templates when the page gets indexed initially (so on runtime), which will only be visible to superusers.*
-
 ## Usage
 
 To use this module you'll have to setup some module configurations and schema instructions.
+
+*NOTE: This module will save time of the last update for each page in a meta field called `elasticsearch_lastindex`. You can access this value with `$page->meta('elasticsearch_lastindex')`*
 
 ### Configuration
 
@@ -60,6 +62,7 @@ Configure the module in your ProcessWire module backend (which will be available
 - optionally insert a prefix string that'll be used when hashing your ES ids
 - insert template configurations (see [Schema](#schema) to see how those work)
 - (re)index all pages matching our module configuration by clicking the "Index All Pages" button. *NOTE: using this option can take quite a long time (primarily depending on how much ProcessWire pages you're going to send to the ElasticSearch index).*
+- or use the batchSync.php script (description below)
 
 ### Schema
 
