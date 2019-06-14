@@ -48,7 +48,7 @@ composer require blue-tomato/elasticsearch-feeder
 
 To use this module you'll have to setup some module configurations and schema instructions.
 
-*NOTE: This module will save time of the last update for each page in a meta field called `elasticsearch_lastindex`. You can access this value with `$page->meta('elasticsearch_lastindex')`*
+*NOTE: This module will save time of the last update for each page and the document ID in a meta field called `elasticsearchfeeder_meta`. You can access this value with `$page->meta('elasticsearchfeeder_meta')`*
 
 ### Configuration
 
