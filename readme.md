@@ -145,8 +145,14 @@ $config->elasticsearchFeederConnectionOverride = [
 ### Deactivate ElasticSearchFeeder throw config.php
 If you want to prevent to send pages to ElasticSearch from your development or staging server but don't want to deactivate the module in the database, you can add `$config->elasticsearchFeederDisabled = true` to your `config.php` or `config-dev.php` file. This will prevent of adding the necessary hooks for the indexation.
 
-## ElasticSearch Version and Document-Type
+### Show ElasticSearch Meta Information / Status in ProcessWire Admin Panel
+Since we save the document-ID and the last time when the page is sent to the index in the `$page-meta()`, you can show them also in the admin panel with [MarkupRuntime Module](https://modules.processwire.com/modules/fieldtype-runtime-markup/).
 
+Here is an example configuration for MarkupRuntime:
+![](docs/images/markupRuntimeConfig.png)
+![](docs/images/markupRuntimeField.png)
+
+## ElasticSearch Version and Document-Type
 Please consider that ElasticSearch 6.0.0 removed the support for multiple document-types in one and the same index. We support both variants with this module. You can define for each ProcessWire template seperate index and document-type names. I.e. if you use ElasticSearch => 6.0.0, you can use the same name for index and document-type.
 
 https://www.elastic.co/guide/en/elasticsearch/reference/6.x/removal-of-types.html
