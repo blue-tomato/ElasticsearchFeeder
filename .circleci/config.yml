@@ -28,6 +28,7 @@ jobs:
       - run:
           name: Install Stuff We Need
           command: |
+            sudo apt-get install -y libpng-dev
             sudo docker-php-ext-install gd pdo pdo_mysql mysqli
             sudo composer self-update
             sudo composer global require wireshell/wireshell
