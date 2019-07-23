@@ -12,7 +12,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 120,
+			'version' => 121,
 			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
@@ -256,9 +256,14 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
     if($document) {
 			$res = $this->curlJsonGet($url, $document);
-			if(isset($res->status) && $res->status == 404) { //parse response and check if error or not
+
+			if(isset($res['status']) && $res['status'] == 404) {
 				//not indexed successfully, log error message from elasticsearch
 				$this->log("Error: no valid Elasticsearch indexation: Response Status: {$res->status}; Error: {$res->error->type}");
+				return false;
+			} else if(isset($res['error'])) {
+				$msgString = json_encode($res);
+				$this->log("Error: {$msgString}");
 				return false;
 			} else {
 				//indexed successfully
