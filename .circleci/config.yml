@@ -18,7 +18,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_USER: test_user
           MYSQL_PASSWORD: test_password
-      - image: elasticsearch:6.8.0
+      - image: elasticsearch:7.2.0
         name: es
     steps:
 
@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Install Stuff We Need
           command: |
-            sudo apt-get install -y libpng-dev zziplib-bin zlib1g-dev
+          #sudo apt-get install -y libpng-dev zziplib-bin zlib1g-dev
             sudo docker-php-ext-install gd pdo pdo_mysql mysqli
             sudo composer self-update
             sudo composer global require wireshell/wireshell
