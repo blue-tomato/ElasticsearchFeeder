@@ -423,7 +423,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			$curlConfig[CURLOPT_CUSTOMREQUEST] = $method;
 
 		if ( ! is_null($data))
-			$curlConfig[CURLOPT_POSTFIELDS] = json_encode($data);
+			$curlConfig[CURLOPT_POSTFIELDS] = json_encode($data, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 
 		curl_setopt_array($ch, $curlConfig);
 
@@ -455,7 +455,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		);
 	}
 
-  protected function getElasticSearchDocumentType(Template $template) {
+  public function getElasticSearchDocumentType(Template $template) {
     return $this->get("es_template_type_$template->id");
 	}
 
