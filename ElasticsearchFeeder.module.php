@@ -259,11 +259,11 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 			if(isset($res['status']) && $res['status'] == 404) {
 				//not indexed successfully, log error message from elasticsearch
-				$this->log("Error: no valid Elasticsearch indexation: Response Status: {$res->status}; Error: {$res->error->type}");
+				$this->log("Error for page with id {$page->id}: no valid Elasticsearch indexation: Response Status: {$res->status}; Error: {$res->error->type}");
 				return false;
 			} else if(isset($res['error'])) {
-				$msgString = json_encode($res);
-				$this->log("Error: {$msgString}");
+				$msgString = json_encode($res, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+				$this->log("Error for page with id {$page->id}: {$msgString}");
 				return false;
 			} else {
 				//indexed successfully
