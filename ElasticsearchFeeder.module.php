@@ -12,7 +12,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 121,
+			'version' => 122,
 			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
@@ -313,12 +313,16 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 	public function afterPageUnpublished(HookEvent $event) {
 		$page = $event->arguments[0];
-		$res = $this->curlJsonDelete($page);
-		if($res) { //TODO parse and check reponse
-			$this->session->message("Document removed from ElasticSearch.");
-		} else {
-			$this->session->warning("Can't remove document (pageId: {$page->id}) from ElasticSearch", Notice::log);
+
+		if($this->checkAllowedTemplate($page->template)) {
+			$res = $this->curlJsonDelete($page);
+			if($res) { //TODO parse and check reponse
+				$this->session->message("Document removed from ElasticSearch.");
+			} else {
+				$this->session->warning("Can't remove document (pageId: {$page->id}) from ElasticSearch", Notice::log);
+			}
 		}
+
 	}
 
   public function dashesToCamelCase(string $string, boolean $capitalizeFirstCharacter = null) {
@@ -347,24 +351,31 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	public function beforePageDelete(HookEvent $event) {
 
 		$page = $event->arguments[0];
-		$res = $this->curlJsonDelete($page);
+		if($this->checkAllowedTemplate($page->template)) {
+			$res = $this->curlJsonDelete($page);
 
-		if($res) { //TODO parse and check reponse
-			$this->session->message("Document removed from ElasticSearch.");
-		} else {
-			$this->session->warning("Can't remove document (pageId: {$page->id}) from ElasticSearch", Notice::log);
+			if($res) { //TODO parse and check reponse
+				$this->session->message("Document removed from ElasticSearch.");
+			} else {
+				$this->session->warning("Can't remove document (pageId: {$page->id}) from ElasticSearch", Notice::log);
+			}
 		}
+
 	}
 
 	public function beforePageTrash(HookEvent $event) {
-		$page = $event->arguments[0];
-		$res = $this->curlJsonDelete($page);
 
-		if($res) { //TODO parse and check reponse
-			$this->session->message("Document removed from ElasticSearch.");
-		} else {
-			$this->session->warning("Can't remove document (pageId: {$page->id}) from ElasticSearch", Notice::log);
+		$page = $event->arguments[0];
+		if($this->checkAllowedTemplate($page->template)) {
+			$res = $this->curlJsonDelete($page);
+
+			if($res) { //TODO parse and check reponse
+				$this->session->message("Document removed from ElasticSearch.");
+			} else {
+				$this->session->warning("Can't remove document (pageId: {$page->id}) from ElasticSearch", Notice::log);
+			}
 		}
+
 	}
 
 	public function curlJsonGet(string $url, $data) {
