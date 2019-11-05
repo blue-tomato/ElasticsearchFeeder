@@ -19,5 +19,9 @@
     "require": {
         "php": ">=7.0",
         "hari/pw-module": "~1.0"
+    },
+    "require-dev": {
+      "processwire/processwire": ">=3.0.133",
+      "peridot-php/peridot": "~1.19.0"
     }
 }
