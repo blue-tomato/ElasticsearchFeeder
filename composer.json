@@ -18,7 +18,8 @@
     ],
     "require": {
         "php": ">=7.0",
-        "hari/pw-module": "~1.0"
+        "hari/pw-module": "~1.0",
+        "ext-curl": "*"
     },
     "require-dev": {
       "processwire/processwire": ">=3.0.133",
