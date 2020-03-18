@@ -1,7 +1,7 @@
 {
     "name": "blue-tomato/elasticsearch-feeder",
     "type": "pw-module",
-    "description": "Schema-flexible ProcessWire module for getting your page into cloudhosted Elasticsearch like Bonsai",
+    "description": "Schema-flexible ProcessWire module for getting your page into ElasticSearch",
     "keywords": [ "elasticsearch", "elastic", "bonsai", "processwire"],
     "homepage": "https://github.com/blue-tomato/ElasticsearchFeeder",
     "license": "MIT",
@@ -18,8 +18,13 @@
     ],
     "require": {
         "php": ">=7.0",
+<<<<<<< HEAD
         "hari/pw-module": "~1.0",
         "ext-curl": "*"
+=======
+        "ext-curl": "*",
+        "hari/pw-module": "~1.0"
+>>>>>>> origin/master
     },
     "require-dev": {
       "processwire/processwire": ">=3.0.133",
