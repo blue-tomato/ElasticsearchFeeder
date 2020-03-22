@@ -1,0 +1,6 @@
+/build/
+/code-coverage-report/
+/docs/
+/tmp/
+/vendor/
+/peridot.phar

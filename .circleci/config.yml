@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/php:7.3.6-cli-stretch
+      - image: circleci/php:7.4.4-cli-stretch
         name: app
         environment:
           PW_ENV: testing
@@ -18,7 +18,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_USER: test_user
           MYSQL_PASSWORD: test_password
-      - image: elasticsearch:6.8.0
+      - image: elasticsearch:7.6.1
         name: es
     steps:
 
@@ -40,11 +40,9 @@ jobs:
 
       - run:
           name: Install Processwire and Prepare ElasticsearchFeeder Module
-          # Install Processwire Version 3.0.133 which supports $page->meta()
-          # https://github.com/processwire/processwire/commit/bccdc2ace4fe8f229163f9c9dabf3678d144d89f
           command: |
             sudo mkdir ../ElasticsearchFeeder && sudo mv * ../ElasticsearchFeeder
-            sudo /root/.composer/vendor/bin/wireshell new processwire --sha=bccdc2ace4fe8f229163f9c9dabf3678d144d89f --profile=default --dbEngine=MyISAM --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
+            sudo /root/.composer/vendor/bin/wireshell new processwire --sha=278d323acd977bf2efd932bcaf5f26ec66e9db39 --profile=default --dbEngine=MyISAM --dbHost=db --dbUser=test_user --dbPass=test_password --dbName=test_database --timezone=Europe/Berlin --httpHosts=localhost --username=admin --userpass=Test123 --useremail=john.doe@acme.com
             sudo mv ../ElasticsearchFeeder processwire/site/modules/
 
       - run:

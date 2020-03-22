@@ -1,0 +1,22 @@
+{
+    "name": "peridot-php/peridot-scope",
+    "description": "Scopes for function binding and mixins",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Brian Scaturro",
+            "email": "scaturrob@gmail.com"
+        }
+    ],
+    "require": {
+      "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Peridot\\Scope\\": "src/"
+        }
+    },
+    "require-dev": {
+        "peridot-php/peridot-jumpstart": "~1.0"
+    }
+}
