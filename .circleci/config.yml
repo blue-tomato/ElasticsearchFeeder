@@ -18,7 +18,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_USER: test_user
           MYSQL_PASSWORD: test_password
-      - image: elasticsearch:7.6.1
+      - image: elasticsearch:6.8.7
         name: es
     steps:
 
