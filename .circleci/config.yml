@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/php:7.3.9-cli-buster
+      - image: circleci/php:7.1-cli-buster
         name: app
         environment:
           PW_ENV: testing
