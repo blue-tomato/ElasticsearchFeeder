@@ -113,7 +113,7 @@ To enable module debugging:
 ![](docs/images/debugModule.png)
 
 ### Batch Sync via CLI or Cron
-You can send your pages throw the "Index all Pages" button in the module configuration page in `Modules` > `Site` > `ElasticsearchFeeder`. If you have many pages, this can run very long and it can cause server timeouts.
+You can send your pages through the "Index all Pages" button in the module configuration page in `Modules` > `Site` > `ElasticsearchFeeder`. If you have many pages, this can run very long and it can cause server timeouts.
 
 For this reason you can use the `batchSync.php` script in the module path via command line. You can also set up a repeating cronjob to ensure a full sync every _x_ times.
 
@@ -142,7 +142,7 @@ $config->elasticsearchFeederConnectionOverride = [
 ];
 ```
 
-### Deactivate ElasticSearchFeeder throw config.php
+### Deactivate ElasticSearchFeeder through config.php
 If you want to prevent to send pages to ElasticSearch from your development or staging server but don't want to deactivate the module in the database, you can add `$config->elasticsearchFeederDisabled = true` to your `config.php` or `config-dev.php` file. This will prevent of adding the necessary hooks for the indexation.
 
 ### Show ElasticSearch Meta Information / Status in ProcessWire Admin Panel
