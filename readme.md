@@ -130,8 +130,8 @@ If you have your Server behind a proxy, you can add to your `config.php` file fo
 - `$config->httpProxy = "your-http-proxy-server.xyz:8888";`
 - `$config->httpsProxy = "your-https-proxy-server.xyz:5394";`
 
-### Override ElasticSearch Connection throw config.php
-You can override your Connection to ElasticSearch throw `$config->elasticsearchFeederConnectionOverride`. E.g. if you want to work local or on stage Servers with your local ElasticSearch Server but let the Database values untouched.
+### Override ElasticSearch Connection through config.php
+You can override your Connection to ElasticSearch through `$config->elasticsearchFeederConnectionOverride`. E.g. if you want to work local or on stage Servers with your local ElasticSearch Server but let the Database values untouched.
 
 ```php
 $config->elasticsearchFeederConnectionOverride = [
