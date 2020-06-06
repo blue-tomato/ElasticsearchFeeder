@@ -1,5 +1,7 @@
 <?php namespace ProcessWire;
 
+  set_time_limit(0);
+
   // include processwire api
   include_once(__DIR__ . "/../../../index.php");
 
