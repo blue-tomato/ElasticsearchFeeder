@@ -6,6 +6,9 @@
   // include processwire api
   include_once(__DIR__ . "/../../../index.php");
 
+  // if not executed over cli
+  if(!$config->cli) exit();
+
   if($config->elasticsearchFeederDisabled == true) {
     echo "Warning: ElasticsearchFeeder is deactivated throw config.php\n";
     exit();
