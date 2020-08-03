@@ -16,7 +16,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 125,
+			'version' => 130,
 			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
@@ -56,7 +56,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	}
 
 
-	public static function getModuleConfigInputfields(array $data)
+	public function getModuleConfigInputfields(array $data)
 	{
 		$fields = new InputfieldWrapper();
 		$modules = $this->wire('modules');
