@@ -1,7 +1,5 @@
 <?php
 
-namespace ProcessWire;
-
 class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 {
 
