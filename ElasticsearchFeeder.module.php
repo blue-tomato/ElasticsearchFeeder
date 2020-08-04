@@ -39,7 +39,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 		// don't add hooks if elasticsearchFeederDisabled is active i.e. in dev mode
 		$config = $this->wire('config');
-		if ($config->elasticsearchFeederDisabled == true) {
+		if ($config->elasticsearchFeederDisabled === true) {
 			return false;
 		}
 
@@ -56,21 +56,21 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	}
 
 
-	public function getModuleConfigInputfields(array $data)
+	public static function getModuleConfigInputfields(array $data)
 	{
-		$fields = new InputfieldWrapper();
-		$modules = $this->wire('modules');
-		$templates = $this->wire('templates');
-		$config = $this->wire('config');
+		$wrapper = new InputfieldWrapper();
+		$modules = wire('modules');
+		$templates = wire('templates');
+		$config = wire('config');
 
 		// show warning if ElasticSearchFeeder is deactivated
 		// i.e. for development or stage environments
 		if ($config->elasticsearchFeederDisabled) {
-			$this->wire()->warning("Warning: ElasticsearchFeeder is deactivated throw config.php");
-		} elseif ($data['es_debug_mode'] && $data['es_debug_mode'] == 'on') {
-			$this->wire()->warning("Warning: ElasticSearch Debug Mode is enabled");
+			wire()->warning("Warning: ElasticsearchFeeder is deactivated throw config.php");
+		} elseif ($data['es_debug_mode'] && $data['es_debug_mode'] === 'on') {
+			wire()->warning("Warning: ElasticSearch Debug Mode is enabled");
 		} elseif ($config->elasticsearchFeederConnectionOverride) {
-			$this->wire()->warning("Warning: ElasticsearchFeeder Server Connection are overwritten by config.php");
+			wire()->warning("Warning: ElasticsearchFeeder Server Connection are overwritten by config.php");
 		}
 
 		$field = $modules->get('InputfieldSelect');
@@ -83,7 +83,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			'on' => 'on'
 		);
 		$field->value = isset($data['es_debug_mode']) ? $data['es_debug_mode'] : 'off';
-		$fields->add($field);
+		$wrapper->add($field);
 
 		$field = $modules->get('InputfieldSelect');
 		$field->name = "es_protocol";
@@ -94,7 +94,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			'http' => 'http'
 		);
 		$field->value = isset($data['es_protocol']) ? $data['es_protocol'] : 'https';
-		$fields->add($field);
+		$wrapper->add($field);
 
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_host";
@@ -103,21 +103,21 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		$field->value = isset($data['es_host']) ? $data['es_host'] : '';
 		$field->description = __("An IP address will do, i.e. '127.0.0.1'.");
 		$field->placeholder = "i.e. 127.0.0.1";
-		$fields->add($field);
+		$wrapper->add($field);
 
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_access_key";
 		$field->label = __("ElasticSearch Access Key");
 		$field->value = isset($data['es_access_key']) ? $data['es_access_key'] : '';
 		$field->description = __("Your ElasticSearch Access Key / Bonsai");
-		$fields->add($field);
+		$wrapper->add($field);
 
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_access_secret";
 		$field->label = __("ElasticSearch Access Secret");
 		$field->value = isset($data['es_access_secret']) ? $data['es_access_secret'] : '';
 		$field->description = __("Your ElasticSearch Access Secret / Bonsai");
-		$fields->add($field);
+		$wrapper->add($field);
 
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_schema_path";
@@ -125,7 +125,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		$field->value = isset($data['es_schema_path']) ? $data['es_schema_path'] : '';
 		$field->description = __("Path where you Schema / Template Mapping are saved. Has to be in /site/templates/");
 		$field->placeholder = "i.e. foo/bar/elastichSearchSchema";
-		$fields->add($field);
+		$wrapper->add($field);
 
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_index_id_prefix";
@@ -133,12 +133,12 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		$field->value = isset($data['es_index_id_prefix']) ? $data['es_index_id_prefix'] : 'processwire';
 		$field->placeholder = "i.e. processwire";
 		$field->required = true;
-		$fields->add($field);
+		$wrapper->add($field);
 
 		foreach ($templates as $template) {
 
 			// WARNING: don't allow system templates like admin, roles or permissions...
-			if ($template->flags == Template::flagSystem) continue;
+			if ($template->flags === Template::flagSystem) continue;
 
 			$field = $modules->get('InputfieldMarkup');
 			$field->label  = __("Configuration for template: $template->name");
@@ -166,7 +166,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 			$templateField = $modules->get("InputfieldText");
 			$templateField->name = "es_template_type_$template->id";
-			if (isset($data["es_template_index_$template->id"]) && $data["es_template_index_$template->id"] == 'yes') {
+			if (isset($data["es_template_index_$template->id"]) && $data["es_template_index_$template->id"] === 'yes') {
 				$templateField->required = true;
 			}
 			$templateField->label = __("Document Type Name");
@@ -174,39 +174,38 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			$templateField->placeholder = "i.e. $template->name";
 			$field->add($templateField);
 
-			$fields->add($field);
+			$wrapper->add($field);
 		}
 
 		$field = $modules->get('InputfieldMarkup');
 		$field->label  = __('Update ES index');
 
-
 		$field_button = $modules->get('InputfieldButton');
 		$field_button->name = 'update_all_pages';
 		$field_button->value = __('Index All Pages');
-		$field_button->href = 'edit?name=' . $this->wire('input')->get('name') . '&es_update=all_pages';
+		$field_button->href = 'edit?name=' . wire('input')->get('name') . '&es_update=all_pages';
 		$field_button->description = __("Indexes all ES-relevant pages. WARNING: Can run very long if you have a lot of pages.");
 		$field->add($field_button);
 
 		foreach ($templates as $template) {
 
 			// WARNING: don't allow system templates like admin, roles or permissions...
-			if ($template->flags == Template::flagSystem) continue;
+			if ($template->flags === Template::flagSystem) continue;
 
 			// render only button for allowed templates
-			if (!isset($data["es_template_index_$template->id"]) || (isset($data["es_template_index_$template->id"]) && $data["es_template_index_$template->id"] == 'no')) continue;
+			if (!isset($data["es_template_index_$template->id"]) || (isset($data["es_template_index_$template->id"]) && $data["es_template_index_$template->id"] === 'no')) continue;
 
 			$field_button = $modules->get('InputfieldButton');
 			$field_button->name = 'update_all_pages_' . $template->id;
 			$field_button->value = "Index All {$template->name} Pages";
-			$field_button->href = 'edit?name=' . $this->wire('input')->get('name') . '&es_update=all_pages&template_id=' . $template->id;
+			$field_button->href = 'edit?name=' . wire('input')->get('name') . '&es_update=all_pages&template_id=' . $template->id;
 
 			$field->add($field_button);
 		}
 
-		$fields->add($field);
+		$wrapper->add($field);
 
-		return $fields;
+		return $wrapper;
 	}
 
 	public function reIndexButtonClick(HookEvent $event)
@@ -267,7 +266,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		if ($document) {
 			$res = $this->curlJsonGet($url, $document);
 
-			if (isset($res['status']) && $res['status'] == 404) {
+			if (isset($res['status']) && $res['status'] === 404) {
 				//not indexed successfully, log error message from elasticsearch
 				$this->log("Error for page with id {$page->id}: no valid Elasticsearch indexation: Response Status: {$res->status}; Error: {$res->error->type}");
 				return false;
@@ -438,9 +437,9 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			)
 		);
 
-		if ($config->httpsProxy && $this->getElasticSearchProtocol() == 'https') {
+		if ($config->httpsProxy && $this->getElasticSearchProtocol() === 'https') {
 			$curlConfig[CURLOPT_PROXY] = $config->httpsProxy;
-		} else if ($config->httpProxy && $this->getElasticSearchProtocol() == 'http') {
+		} else if ($config->httpProxy && $this->getElasticSearchProtocol() === 'http') {
 			$curlConfig[CURLOPT_PROXY] = $config->httpProxy;
 		}
 
@@ -492,10 +491,10 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	{
 
 		// WARNING: don't allow system templates like admin, roles or permissions...
-		if ($template->flags == Template::flagSystem) return false;
+		if ($template->flags === Template::flagSystem) return false;
 
 		$value = $this->get("es_template_index_$template->id");
-		return (isset($value) && $value == 'yes') ? true : false;
+		return (isset($value) && $value === 'yes') ? true : false;
 	}
 
 	public function createElasticSearchDocumentHashedId(string $id, string $prefix = '')
@@ -583,7 +582,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	protected function isDebugModeEnabled()
 	{
 		$debugMode = $this->get('es_debug_mode');
-		return (isset($debugMode) && $debugMode == 'on') ? true : false;
+		return (isset($debugMode) && $debugMode === 'on') ? true : false;
 	}
 
 	public function indexAllAllowedPages(string $templateId = '')
