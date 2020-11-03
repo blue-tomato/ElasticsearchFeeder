@@ -14,11 +14,11 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 130,
+			'version' => 131,
 			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
-			'autoload' => true,
+			'autoload' => 'template=admin',
 			'requires' => [
 				'PHP>=7.0.0',
 				'ProcessWire>=3.0.133'
