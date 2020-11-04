@@ -8,13 +8,13 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	/**
 	 * Description of the module including meta data
 	 *
-	 */
+	 */	
 	public static function getModuleInfo()
 	{
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 133,
+			'version' => 134,
 			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
@@ -54,28 +54,28 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	}
 
 
-	public static function getModuleConfigInputfields(array $data)
+	public function getModuleConfigInputfields(array $data)
 	{
 		$wrapper = new InputfieldWrapper();
-		$modules = wire('modules');
-		$templates = wire('templates');
-		$config = wire('config');
+		$modules = $this->wire('modules');
+		$templates = $this->wire('templates');
+		$config = $this->wire('config');
 
 		// show warning if ElasticSearchFeeder is deactivated
 		// i.e. for development or stage environments
 		if ($config->elasticsearchFeederDisabled) {
-			wire()->warning("Warning: ElasticsearchFeeder is deactivated throw config.php");
+			$this->wire()->warning("Warning: ElasticsearchFeeder is deactivated throw config.php");
 		} elseif ($data['es_debug_mode'] && $data['es_debug_mode'] === 'on') {
-			wire()->warning("Warning: ElasticSearch Debug Mode is enabled");
+			$this->wire()->warning("Warning: ElasticSearch Debug Mode is enabled");
 		} elseif ($config->elasticsearchFeederConnectionOverride) {
-			wire()->warning("Warning: ElasticsearchFeeder Server Connection are overwritten by config.php");
+			$this->wire()->warning("Warning: ElasticsearchFeeder Server Connection are overwritten by config.php");
 		}
 
 		$field = $modules->get('InputfieldSelect');
 		$field->name = "es_debug_mode";
 		$field->required = true;
 		$field->label = 'ElasticSearch Debug Mode';
-		$field->description = __("If debug mode is enabled, instead of sending the page to ES, the schema will be output to the message-bar on page save.");
+		$field->description = "If debug mode is enabled, instead of sending the page to ES, the schema will be output to the message-bar on page save.";
 		$field->options = array(
 			'off' => 'off',
 			'on' => 'on'
@@ -97,37 +97,37 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_host";
 		$field->required = true;
-		$field->label = __("ElasticSearch Host");
+		$field->label = "ElasticSearch Host";
 		$field->value = isset($data['es_host']) ? $data['es_host'] : '';
-		$field->description = __("An IP address will do, i.e. '127.0.0.1'.");
+		$field->description = "An IP address will do, i.e. '127.0.0.1'.";
 		$field->placeholder = "i.e. 127.0.0.1";
 		$wrapper->add($field);
 
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_access_key";
-		$field->label = __("ElasticSearch Access Key");
+		$field->label = "ElasticSearch Access Key";
 		$field->value = isset($data['es_access_key']) ? $data['es_access_key'] : '';
-		$field->description = __("Your ElasticSearch Access Key / Bonsai");
+		$field->description = "Your ElasticSearch Access Key / Bonsai";
 		$wrapper->add($field);
 
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_access_secret";
-		$field->label = __("ElasticSearch Access Secret");
+		$field->label = "ElasticSearch Access Secret";
 		$field->value = isset($data['es_access_secret']) ? $data['es_access_secret'] : '';
-		$field->description = __("Your ElasticSearch Access Secret / Bonsai");
+		$field->description = "Your ElasticSearch Access Secret / Bonsai";
 		$wrapper->add($field);
 
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_schema_path";
-		$field->label = __("ElasticSearch Schema Path");
+		$field->label = "ElasticSearch Schema Path";
 		$field->value = isset($data['es_schema_path']) ? $data['es_schema_path'] : '';
-		$field->description = __("Path where you Schema / Template Mapping are saved. Has to be in /site/templates/");
+		$field->description = "Path where you Schema / Template Mapping are saved. Has to be in /site/templates/";
 		$field->placeholder = "i.e. foo/bar/elastichSearchSchema";
 		$wrapper->add($field);
 
 		$field = $modules->get("InputfieldText");
 		$field->name = "es_index_id_prefix";
-		$field->label = __("Prefix for your ES document _id's");
+		$field->label = "Prefix for your ES document _id's";
 		$field->value = isset($data['es_index_id_prefix']) ? $data['es_index_id_prefix'] : 'processwire';
 		$field->placeholder = "i.e. processwire";
 		$field->required = true;
@@ -139,7 +139,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			if ($template->flags === Template::flagSystem) continue;
 
 			$field = $modules->get('InputfieldMarkup');
-			$field->label  = __("Configuration for template: $template->name");
+			$field->label  = "Configuration for template: $template->name";
 
 			$templateField = $modules->get('InputfieldSelect');
 			$templateField->name = "es_template_index_$template->id";
@@ -157,7 +157,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			if (isset($data["es_template_index_$template->id"]) && $data["es_template_index_$template->id"] == 'yes') {
 				$templateField->required = true;
 			}
-			$templateField->label = __("Document Index Name");
+			$templateField->label = "Document Index Name";
 			$templateField->value = isset($data["es_template_indexname_$template->id"]) ? $data["es_template_indexname_$template->id"] : $template->name;
 			$templateField->placeholder = "i.e. $template->name";
 			$field->add($templateField);
@@ -167,7 +167,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			if (isset($data["es_template_index_$template->id"]) && $data["es_template_index_$template->id"] === 'yes') {
 				$templateField->required = true;
 			}
-			$templateField->label = __("Document Type Name");
+			$templateField->label = "Document Type Name";
 			$templateField->value = isset($data["es_template_type_$template->id"]) ? $data["es_template_type_$template->id"] : $template->name;
 			$templateField->placeholder = "i.e. $template->name";
 			$field->add($templateField);
@@ -176,13 +176,13 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		}
 
 		$field = $modules->get('InputfieldMarkup');
-		$field->label  = __('Update ES index');
+		$field->label  = "Update ES inde";
 
 		$field_button = $modules->get('InputfieldButton');
 		$field_button->name = 'update_all_pages';
-		$field_button->value = __('Index All Pages');
-		$field_button->href = 'edit?name=' . wire('input')->get('name') . '&es_update=all_pages';
-		$field_button->description = __("Indexes all ES-relevant pages. WARNING: Can run very long if you have a lot of pages.");
+		$field_button->value = "Index All Pages";
+		$field_button->href = 'edit?name=' . $this->wire('input')->get('name') . '&es_update=all_pages';
+		$field_button->description = "Indexes all ES-relevant pages. WARNING: Can run very long if you have a lot of pages.";
 		$field->add($field_button);
 
 		foreach ($templates as $template) {
@@ -196,7 +196,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			$field_button = $modules->get('InputfieldButton');
 			$field_button->name = 'update_all_pages_' . $template->id;
 			$field_button->value = "Index All {$template->name} Pages";
-			$field_button->href = 'edit?name=' . wire('input')->get('name') . '&es_update=all_pages&template_id=' . $template->id;
+			$field_button->href = 'edit?name=' . $this->wire('input')->get('name') . '&es_update=all_pages&template_id=' . $template->id;
 
 			$field->add($field_button);
 		}
@@ -211,7 +211,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 		// check whether reIndex button was clicked
 		// to to say an eventListener checking the proper url parameter in case of a admin-page reload
-		if ($this->input->get('es_update') != 'all_pages' || $event->object->template != 'admin') return;
+		if ($this->input->get('es_update') !== 'all_pages' || $event->object->template !== 'admin') return;
 
 		// prevent server timeouts
 		// works only if php safe_mode is off
@@ -594,7 +594,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 			if (empty($templateId) && $this->checkAllowedTemplate($template)) { // check for all templates
 				array_push($allowedTemplates, $template->id);
-			} else if (!empty($templateId) && $templateId == $template->id && $this->checkAllowedTemplate($template)) { // check only one template
+			} else if (!empty($templateId) && $templateId === $template->id && $this->checkAllowedTemplate($template)) { // check only one template
 				array_push($allowedTemplates, $template->id);
 			}
 		}
