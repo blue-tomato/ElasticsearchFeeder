@@ -247,13 +247,13 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		if (file_exists($documentTypeSchemaPath)) {
 			include_once($documentTypeSchemaPath);
 			// from now on $documentSchemaFunctionName() from the schema file should be available as a function
-			//if(function_exists($documentSchemaFunctionName)) {
+			if(function_exists($documentSchemaFunctionName)) {
 				$document = call_user_func($documentSchemaFunctionName, $page);
 				$document["page-id"] = $page->id;
 				$document["prefix"] = $this->getIndexPrefix();
-			//} else {
-			//	$this->session->message("Error: schema function $documentSchemaFunctionName does not exist");
-			//}
+			} else {
+				$this->session->message("Error: schema function $documentSchemaFunctionName does not exist");
+			}
 		} else {
 			$this->log("Error: no valid schema defined for template: {$page->template->name} ({$typeName})");
 		}
