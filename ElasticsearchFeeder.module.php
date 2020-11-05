@@ -1,5 +1,7 @@
 <?php
 
+namespace ProcessWire;
+
 class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 {
 
@@ -8,13 +10,13 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	/**
 	 * Description of the module including meta data
 	 *
-	 */	
+	 */
 	public static function getModuleInfo()
 	{
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 134,
+			'version' => 135,
 			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
@@ -36,8 +38,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	{
 
 		// don't add hooks if elasticsearchFeederDisabled is active i.e. in dev mode
-		$config = $this->wire('config');
-		if ($config->elasticsearchFeederDisabled === true) {
+		if ($this->config->elasticsearchFeederDisabled === true) {
 			return false;
 		}
 
@@ -54,21 +55,21 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	}
 
 
-	public function getModuleConfigInputfields(array $data)
+	public static function getModuleConfigInputfields(array $data)
 	{
 		$wrapper = new InputfieldWrapper();
-		$modules = $this->wire('modules');
-		$templates = $this->wire('templates');
-		$config = $this->wire('config');
+		$modules = wire('modules');
+		$templates = wire('templates');
+		$config = wire('config');
 
 		// show warning if ElasticSearchFeeder is deactivated
 		// i.e. for development or stage environments
 		if ($config->elasticsearchFeederDisabled) {
-			$this->wire()->warning("Warning: ElasticsearchFeeder is deactivated throw config.php");
-		} elseif ($data['es_debug_mode'] && $data['es_debug_mode'] === 'on') {
-			$this->wire()->warning("Warning: ElasticSearch Debug Mode is enabled");
+			wire("session")->warning("Warning: ElasticsearchFeeder is deactivated throw config.php");
+		} elseif (isset($data) && isset($data['es_debug_mode']) && $data['es_debug_mode'] === 'on') {
+			wire("session")->warning("Warning: ElasticSearch Debug Mode is enabled");
 		} elseif ($config->elasticsearchFeederConnectionOverride) {
-			$this->wire()->warning("Warning: ElasticsearchFeeder Server Connection are overwritten by config.php");
+			wire("session")->warning("Warning: ElasticsearchFeeder Server Connection are overwritten by config.php");
 		}
 
 		$field = $modules->get('InputfieldSelect');
@@ -181,7 +182,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		$field_button = $modules->get('InputfieldButton');
 		$field_button->name = 'update_all_pages';
 		$field_button->value = "Index All Pages";
-		$field_button->href = 'edit?name=' . $this->wire('input')->get('name') . '&es_update=all_pages';
+		$field_button->href = 'edit?name=' . wire('input')->get('name') . '&es_update=all_pages';
 		$field_button->description = "Indexes all ES-relevant pages. WARNING: Can run very long if you have a lot of pages.";
 		$field->add($field_button);
 
@@ -196,7 +197,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 			$field_button = $modules->get('InputfieldButton');
 			$field_button->name = 'update_all_pages_' . $template->id;
 			$field_button->value = "Index All {$template->name} Pages";
-			$field_button->href = 'edit?name=' . $this->wire('input')->get('name') . '&es_update=all_pages&template_id=' . $template->id;
+			$field_button->href = 'edit?name=' . wire('input')->get('name') . '&es_update=all_pages&template_id=' . $template->id;
 
 			$field->add($field_button);
 		}
