@@ -16,7 +16,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 140,
+			'version' => 141,
 			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
@@ -247,10 +247,13 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		if (file_exists($documentTypeSchemaPath)) {
 			include_once($documentTypeSchemaPath);
 			// from now on $documentSchemaFunctionName() from the schema file should be available as a function
-			$indexPrefix = $this->getIndexPrefix();
-			$document = $documentSchemaFunctionName($page);
-			$document["page-id"] = $page->id;
-			$document["prefix"] = $this->getIndexPrefix();
+			//if(function_exists($documentSchemaFunctionName)) {
+				$document = call_user_func($documentSchemaFunctionName, $page);
+				$document["page-id"] = $page->id;
+				$document["prefix"] = $this->getIndexPrefix();
+			//} else {
+			//	$this->session->message("Error: schema function $documentSchemaFunctionName does not exist");
+			//}
 		} else {
 			$this->log("Error: no valid schema defined for template: {$page->template->name} ({$typeName})");
 		}
