@@ -16,7 +16,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 142,
+			'version' => 150,
 			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
@@ -216,7 +216,9 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 		// prevent server timeouts
 		// works only if php safe_mode is off
-		set_time_limit(0);
+		if(!ini_get('safe_mode')) {
+			set_time_limit(0);
+		}
 
 		$templateId = false;
 		if ($this->input->get('template_id')) $templateId = $this->input->get('template_id');
@@ -336,7 +338,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		}
 	}
 
-	public function dashesToCamelCase(string $string, boolean $capitalizeFirstCharacter = null)
+	public function dashesToCamelCase(string $string, bool $capitalizeFirstCharacter = null)
 	{
 		$str = str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
 		if (!$capitalizeFirstCharacter) {
