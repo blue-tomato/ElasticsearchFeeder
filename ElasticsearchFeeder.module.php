@@ -606,24 +606,32 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		}
 
 		if (count($allowedTemplates) > 0) {
-			$allowedTemplates = implode('|', $allowedTemplates);
-			$pagesToIndex = $pages->find("template=$allowedTemplates");
 
-			foreach ($pagesToIndex as $page) {
+			foreach($allowedTemplates as $allowedTemplate) {
 
-				$success = $this->sendDocumentToElasticSearch($page);
+				$allowedTemplate = wire('sanitizer')->selectorValue($allowedTemplate);
+				$pagesToIndex = $pages->findMany("template=$allowedTemplate");
 
-				if ($success) {
-					$page->meta($this->elasticSearchMetaKeyName, [
-						"es_id" => $success,
-						"lastindex" => date('c')
-					]);
+				foreach ($pagesToIndex as $page) {
 
-					// output log in CLI batch import script
-					if ($config->cli) {
-						echo "Page \"$page->title\" sent to ElasticSearch\n";
+					$success = $this->sendDocumentToElasticSearch($page);
+
+					if ($success) {
+						$page->meta($this->elasticSearchMetaKeyName, [
+							"es_id" => $success,
+							"lastindex" => date('c')
+						]);
+
+						// output log in CLI batch import script
+						if ($config->cli) {
+							echo "Page \"$page->title\" sent to ElasticSearch\n";
+						}
 					}
 				}
+
+				unset($pagesToIndex);
+				$pages->uncacheAll();
+
 			}
 
 			return "All pages sent to ElasticSearch.\n";
