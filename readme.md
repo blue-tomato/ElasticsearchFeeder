@@ -117,11 +117,16 @@ You can send your pages through the "Index all Pages" button in the module confi
 
 For this reason you can use the `batchSync.php` script in the module path via command line. You can also set up a repeating cronjob to ensure a full sync every _x_ times.
 
-The `batchSync.php` script send all pages to ElasticSearch and checks if all documents in the index are public pages in your ProcessWire system.
+The `batchSync.php` script send all pages to ElasticSearch.
 
 I.e:
 ```bash
 php site/modules/ElasticsearchFeeder/batchSync.php
+```
+
+To check if in ElasticSearch existing also still exists in ProcessWire and are public available use this script:
+```bash
+php site/modules/ElasticsearchFeeder/batchCleanup.php
 ```
 
 ### Request to ElasticSearch through a proxy server
