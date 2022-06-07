@@ -42,11 +42,16 @@
         foreach($result["hits"]["hits"] as $pageItem) {
           $pageId = $pageItem["_source"]["page-id"];
           $page = $pages->get($pageId);
+                    
           if(!$page || ($page && !$page->isPublic())) {
             // delete from ES
             $ElasticsearchFeeder->curlJsonDeleteByElasticSearchId($pageItem["_id"], $pageItem["_type"], $pageItem["_index"]);
             echo "Page {$pageItem['_id']} deleted from ElasticSearch\n";
           }
+
+          unset($page);
+				  $pages->uncacheAll();
+
         }
       }
 
