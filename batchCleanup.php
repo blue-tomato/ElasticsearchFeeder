@@ -36,12 +36,10 @@
 
       if($result && isset($result["hits"]) && isset($result["hits"]["hits"])) {
         foreach($result["hits"]["hits"] as $pageItem) {
-          $pageId = $pageItem["_source"]["page-id"];
-          $page = $pages->get($pageId, [
-            "lazy" => true
-          ]);
+          $pageId = $sanitizer->selectorValue($pageItem["_source"]["page-id"]);
+          $page = $pages->getRaw("id=$pageId");
                     
-          if(!$page || ($page && !$page->isPublic())) {
+          if(!$page || ($page && isset($page["status"]) && $page["status"] != Page::statusOn)) {
             // delete from ES
             $ElasticsearchFeeder->curlJsonDeleteByElasticSearchId($pageItem["_id"], $pageItem["_type"], $pageItem["_index"]);
             echo "Page {$pageItem['_id']} deleted from ElasticSearch\n";
@@ -52,6 +50,9 @@
 
         }
       }
+
+      unset($result);
+      unset($count);
 
     }
 
