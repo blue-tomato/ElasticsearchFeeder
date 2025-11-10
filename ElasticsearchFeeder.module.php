@@ -16,13 +16,13 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 		return array(
 			'title' => 'ElasticsearchFeeder',
 			'class' => 'ElasticsearchFeeder',
-			'version' => 201,
+			'version' => 250,
 			'summary' => 'Schema-flexible module for getting your page into ElasticSearch',
 			'href' => 'https://github.com/blue-tomato/ElasticsearchFeeder/',
 			'singular' => true,
 			'autoload' => 'template=admin',
 			'requires' => [
-				'PHP>=7.0.0',
+				'PHP>=8.0.0',
 				'ProcessWire>=3.0.133'
 			]
 		);
@@ -38,7 +38,7 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 	{
 
 		// don't add hooks if elasticsearchFeederDisabled is active i.e. in dev mode
-		if ($this->config->elasticsearchFeederDisabled === true) {
+		if ($this->config->elasticsearchFeederDisabled == true) {
 			return false;
 		}
 
@@ -609,34 +609,87 @@ class ElasticsearchFeeder extends WireData implements Module, ConfigurableModule
 
 		if (count($allowedTemplates) > 0) {
 
+			// Batch processing to reduce memory spikes
+			$batchSize = 100;
+			$totalIndexed = 0;
+
 			foreach($allowedTemplates as $allowedTemplate) {
 
 				$allowedTemplate = wire('sanitizer')->selectorValue($allowedTemplate);
-				$pagesToIndex = $pages->findMany("template=$allowedTemplate");
 
-				foreach ($pagesToIndex as $page) {
+				// Get total count first for progress reporting
+				$totalCount = $pages->count("template=$allowedTemplate");
 
-					$success = $this->sendDocumentToElasticSearch($page);
+				if ($config->cli) {
+					echo "Processing template $allowedTemplate: $totalCount pages total\n";
+				}
 
-					if ($success) {
-						$page->meta($this->elasticSearchMetaKeyName, [
-							"es_id" => $success,
-							"lastindex" => date('c')
-						]);
+				// Process in batches to avoid loading all pages at once
+				$start = 0;
+				$templateIndexed = 0;
 
-						// output log in CLI batch import script
-						if ($config->cli) {
-							echo "Page \"$page->title\" sent to ElasticSearch\n";
+				while (true) {
+					// Load batch of pages
+					$pagesToIndex = $pages->find("template=$allowedTemplate, limit=$batchSize, start=$start");
+
+					if ($pagesToIndex->count() === 0) {
+						break; // No more pages
+					}
+
+					if ($config->cli) {
+						echo "Batch: processing pages $start to " . ($start + $pagesToIndex->count()) . "\n";
+					}
+
+					foreach ($pagesToIndex as $page) {
+
+						$success = $this->sendDocumentToElasticSearch($page);
+
+						if ($success) {
+							$page->meta($this->elasticSearchMetaKeyName, [
+								"es_id" => $success,
+								"lastindex" => date('c')
+							]);
+
+							// output log in CLI batch import script
+							if ($config->cli) {
+								echo "Page \"$page->title\" (ID: $page->id) sent to ElasticSearch\n";
+							}
+
+							$templateIndexed++;
+							$totalIndexed++;
 						}
+					}
+
+					// Free memory after each batch
+					unset($pagesToIndex);
+					$pages->uncacheAll();
+
+					// Force garbage collection if available
+					if (function_exists('gc_collect_cycles')) {
+						gc_collect_cycles();
+					}
+
+					$start += $batchSize;
+
+					if ($config->cli) {
+						echo "Memory usage: " . round(memory_get_usage(true) / 1024 / 1024, 2) . " MB\n";
 					}
 				}
 
-				unset($pagesToIndex);
-				$pages->uncacheAll();
-
+				if ($config->cli) {
+					echo "Template $allowedTemplate complete: $templateIndexed pages indexed\n\n";
+				}
 			}
 
-			return "All pages sent to ElasticSearch.\n";
+			$finalMessage = "All pages sent to ElasticSearch. Total: $totalIndexed pages indexed.\n";
+
+			if ($config->cli) {
+				echo "=== Final Summary ===\n";
+				echo $finalMessage;
+				echo "Peak memory usage: " . round(memory_get_peak_usage(true) / 1024 / 1024, 2) . " MB\n";
+			}
+
+			return $finalMessage;
 		} else {
 			return "No template choosen. You have to allow at least one template for the index.\n";
 		}
